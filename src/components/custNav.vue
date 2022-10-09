@@ -6,7 +6,7 @@
             </a>
             <ul>
                 <li>
-                    <RouterLink to="/">
+                    <RouterLink to="/activity">
                         <span>
                             <i class="icon-home primary font-large-2"></i>
                         </span>
@@ -20,10 +20,12 @@
                     <a>File Upload</a>
                 </li> -->
                 <li>
+                    <RouterLink to="/settings">
                     <span>
                         <i class="icon-gear primary font-large-2"></i>
                     </span>
                     <a>Settings</a>
+                    </RouterLink>
                 </li>
             </ul>
         </div>

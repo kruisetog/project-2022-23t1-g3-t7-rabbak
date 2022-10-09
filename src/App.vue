@@ -1,12 +1,12 @@
 <script setup>
 import { RouterLink, RouterView } from "vue-router";
-import Nav from "./components/nav.vue";
+import custNav from "./components/custNav.vue";
 </script>
 
 <template>
   <div class="main-cont">
     <div class="nav-side">
-      <Nav></Nav>
+      <custNav></custNav>
     </div>
     <div class="large-side">
       <RouterView />

@@ -44,7 +44,7 @@ import TotalCard from "../components/TotalCard.vue";
             <template #amount>$2,000</template>
             <template #benefit>3,041,730 miles</template>
           </TransactionTableRow>
-          <TransactionTableRow excludeProcessing='true'>
+          <TransactionTableRow excludeProcessing=true>
             <template #date>7th Sep 2022</template>
             <template #description>Ezlink Top up</template>
             <template #cardType>Platinum Miles</template>
@@ -78,8 +78,9 @@ import TotalCard from "../components/TotalCard.vue";
   padding-right: 20px;
   display: flex;
 } 
- 
 </style>
+
+
 
 <script>
 export default {

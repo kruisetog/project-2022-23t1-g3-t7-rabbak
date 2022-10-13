@@ -1,3 +1,7 @@
+<script setup>
+import LogOut from "../components/LogOut.vue";
+</script>
+
 <script>
 export default {
     data() {
@@ -26,7 +30,14 @@ export default {
                 this.showDialog = false
                 this.showDeleted = true
             }  
+        },
+        logout(value){
+          console.log(value)
+          this.$router.push({ name: 'logOut', params: { logout: value } })
         }
+        // logout(){
+        //   this.$emit('close', "close");
+        // }
     }
 };
 </script>
@@ -48,11 +59,7 @@ export default {
     </div>
     </div>
     <hr>
-    <div class="float-right mt-5 pt-5">
-    <span class="logout">
-        <i class="icon-signout primary font-large-2"></i>
-    <a>LOGOUT</a></span>
-    </div>
+    <LogOut @logout="logout"></LogOut>
    
    <div v-show="showDialog">
     <div class="modal show" style="display:block;">
@@ -97,10 +104,7 @@ export default {
           <h5>We have now permanently deleted your user account.</h5>
         </div>
         <div class="modal-footer">
-        <button class="w-100 btn btn-lg btn-secondary" type="button"
-            @click="close">
-            LOGOUT
-        </button>
+       
         </div>
       </div>
     </div>

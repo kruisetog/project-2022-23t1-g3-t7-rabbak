@@ -1,4 +1,7 @@
 <script setup>
+import { useRoute } from 'vue-router';
+const route = useRoute();  
+const logout = route.params.logout;
 </script>
 
 <script>
@@ -9,7 +12,8 @@ export default {
             username:"",
             password:"",
             logOutMessage: "",
-            message: ""
+            message: "",
+            logout: false
         };
     },
     name: 'logout',
@@ -21,8 +25,11 @@ export default {
            else if(this.role == "staff"){
             this.$router.push('uploadFile')
            }
+        },
+        logout(value){
+          console.log(value)
         }
-    },
+    }
     // mounted(){
     //     this.$root.$on("Successfully logged out", (msg) =>{
     //         console.log(msg)
@@ -37,7 +44,8 @@ export default {
             <a class="logo">
                 <img id="loginImg" src='./../assets/logo.png' />
             </a>
-            </h2>   
+            </h2> 
+            <h6 v-show="logout">Successfully Logged Out</h6>  
             <h6>{{message}}</h6>
             <h5 class="text-center">Login</h5>
             <div class="form-group">

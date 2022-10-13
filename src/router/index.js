@@ -52,7 +52,16 @@ const router = createRouter({
         hideCustNav: true,
         hideStaffNav: false
        }
-    }
+    },{
+      path: "/:logout",
+      name: "logOut",
+      component: Login,
+      meta: {
+        hideCustNav: true,
+        hideStaffNav: true
+       }
+    },
+
   ],
   linkExactActiveClass: "selected",
 });

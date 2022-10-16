@@ -8,9 +8,9 @@ export default {
       return{
         date:"",
         mcc: "",
-        currency: "",
+        currency: "1",
         amount:"",
-        cardtype:"",
+        cardtype:"1",
         transactionDate: "",
         cardNum: "",
         showSuccess: false
@@ -21,7 +21,6 @@ export default {
         this.showSuccess=true;
       },
       close(value){
-        console.log(value)
         if(value == 'close'){
           this.showSuccess = false;
         }
@@ -49,14 +48,19 @@ export default {
           <div class="col-md-6 form-group">
           <label for="mcc">MCC</label>
                 <input type="number" v-model="mcc" class="form-control" 
-                name="mcc" placeholder="Select MCC">
+                name="mcc" placeholder="Enter MCC">
           </div>
       </div>  
       <div class="row">
         <div class="col-md-6 form-group">
           <label for="currency">Currency</label>
-                <input type="text" v-model="currency" class="form-control" 
-                name="currency" placeholder="Select Currency)">
+          <select class="form-control" v-model="currency" id="currency">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+          </select>
           </div>
           <div class="col-md-6 form-group">
           <label for="amount">Transaction Amount</label>
@@ -67,8 +71,13 @@ export default {
       <div class="row">
         <div class="col-md-6 form-group">
           <label for="cardtype">Card Type</label>
-                <input type="text" v-model="cardtype" class="form-control" 
-                name="cardtype" placeholder="Select Card Type">
+          <select class="form-control" v-model="cardtype" id="cardtype">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+          </select>
           </div>
           <div class="col-md-6 form-group">
           <label for="cardNum">Card Number</label>

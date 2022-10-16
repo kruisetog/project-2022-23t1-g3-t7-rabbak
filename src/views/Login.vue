@@ -45,7 +45,9 @@ export default {
                 <img id="loginImg" src='./../assets/logo.png' />
             </a>
             </h2> 
-            <h6 v-show="logout">Successfully Logged Out</h6>  
+            <br>
+            <h6 class="text-center" v-show="logout">Successfully Logged Out</h6> 
+            <br> 
             <h6>{{message}}</h6>
             <h5 class="text-center">Login</h5>
             <div class="form-group">

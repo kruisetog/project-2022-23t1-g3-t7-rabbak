@@ -5,12 +5,7 @@ export default {
     },
     methods: {
         logout(){
-            this.$router.push('/',{
-            name: 'logout',
-            params: {
-                message: "You have logged out"
-            }
-        });
+            this.$router.push({ name: 'logOut', params: { logout: 'logout' } })
         }
     }
 };

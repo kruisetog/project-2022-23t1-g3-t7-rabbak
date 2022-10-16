@@ -35,9 +35,6 @@ export default {
           console.log(value)
           this.$router.push({ name: 'logOut', params: { logout: value } })
         }
-        // logout(){
-        //   this.$emit('close', "close");
-        // }
     }
 };
 </script>
@@ -124,14 +121,6 @@ export default {
   padding-left: 20px;
   padding-right: 20px;
 } 
-
-.logout{
-    color: lightgrey !important;
-}
-
-.logout:hover{
-    cursor:pointer;
-}
 
 #resend{
     color: lightgrey !important;

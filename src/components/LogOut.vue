@@ -16,3 +16,9 @@ export default {
    <a @click="logout">LOGOUT</a></span>
     </div>
 </template>
+
+<style scoped> 
+.logout:hover{
+    cursor:pointer;
+}
+</style>

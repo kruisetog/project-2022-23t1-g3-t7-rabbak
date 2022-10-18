@@ -1,8 +1,16 @@
+ 
+
 <script>
+import {readFile, read, utils} from 'xlsx';
 export default {
   data() {
     var filelist = [];
-    return { filelist: [] } // Store our uploaded files
+    return { 
+      ft: 'text/csv',
+      filetype: ['text/csv', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,', 'application/vnd.ms-excel'],
+      file : File,
+      filelist: []
+    } // Store our uploaded files
   },
   methods: {
     dragover(event) {
@@ -17,14 +25,39 @@ export default {
       this.onChange();
     },
     onChange() {
-      this.filelist = [...this.$refs.file.files];
+      this.filelist = [...this.$refs.file.files]
     },
     browse(){
       const elem = this.$refs.file
       elem.click()
     },
     upload(){
-      console.log(this.filelist[0])
+      this.file = this.filelist[0];
+      this.ft = this.filelist[0].type
+      console.log(this.file)
+      // console.log(this.file.type in this.filetype)
+      // if(this.ft in this.filetype == false){
+      //   alert('only accept csv/xlxs files')
+      // }
+      // console.log(this.file)
+//to read file in vue
+      // let fileReader = new FileReader();
+      // fileReader.readAsArrayBuffer(this.file);
+      // fileReader.onload = (e) => {
+      //   this.arrayBuffer = fileReader.result;
+      //   var data = new Uint8Array(this.arrayBuffer);
+      //   var arr = new Array();
+      //   for (var i = 0; i != data.length; ++i)
+      //     arr[i] = String.fromCharCode(data[i]);
+      //   var bstr = arr.join("");
+      //   var workbook = read(bstr, { type: "binary" });
+      //   var first_sheet_name = workbook.SheetNames[0];
+      //   var worksheet = workbook.Sheets[first_sheet_name];
+      //   console.log(utils.sheet_to_json(worksheet, { raw: true }));
+      //   var arraylist = utils.sheet_to_json(worksheet, { raw: true });
+      //   this.filelist = [];
+      //   console.log(this.filelist);
+      // };
     }
   }
 }

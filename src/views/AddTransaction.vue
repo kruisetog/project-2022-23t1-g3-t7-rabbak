@@ -38,7 +38,7 @@ export default {
         <div class="col-12">
         <h1>Add Transaction</h1>
         <br>
-      <div v-show="!showSuccess">
+      <div v-if="!showSuccess">
       <div class="row">
         <div class="col-md-6 form-group">
           <label for="transactionDate">Transaction date</label>
@@ -91,8 +91,8 @@ export default {
         </div>
       </div> 
     </div>
-
-      <div v-show="showSuccess">
+    
+      <div v-if="showSuccess">
       <SuccessTransaction @close="close" title="transaction added"></SuccessTransaction>
       </div>
 

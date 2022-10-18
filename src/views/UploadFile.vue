@@ -1,7 +1,10 @@
- 
+<script setup>
+import SuccessTransaction from "../components/SuccessTransaction.vue";
+import {readFile, read, utils} from 'xlsx';
+</script>
+
 
 <script>
-import {readFile, read, utils} from 'xlsx';
 export default {
   data() {
     var filelist = [];
@@ -9,8 +12,9 @@ export default {
       ft: 'text/csv',
       filetype: ['text/csv', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,', 'application/vnd.ms-excel'],
       file : File,
-      filelist: []
-    } // Store our uploaded files
+      filelist: [],
+      showSuccess: false
+    } 
   },
   methods: {
     dragover(event) {
@@ -32,6 +36,7 @@ export default {
       elem.click()
     },
     upload(){
+      this.showSuccess=true;
       this.file = this.filelist[0];
       this.ft = this.filelist[0].type
       console.log(this.file)
@@ -58,8 +63,13 @@ export default {
       //   this.filelist = [];
       //   console.log(this.filelist);
       // };
+    } ,close(value){
+        this.showSuccess = false;
+      }
+  },
+    components:{
+      SuccessTransaction
     }
-  }
 }
 </script>
 
@@ -68,7 +78,7 @@ export default {
     <div class="content">
       <h1>File Upload</h1>
       <br>
-      <div class="row">
+      <div v-if="!showSuccess" class="row">
         <div class="col-md-2"></div>
         <div class="col-md-8">
         <div class="upload-box" @dragover="dragover" @dragleave="dragleave" @drop="drop">
@@ -85,7 +95,10 @@ export default {
           <a class="col-12 btn btn-primary" @click="upload">Upload</a>
         </div>
       </div>
-       
+      
+      <div v-if="showSuccess">
+      <SuccessTransaction @close="close" title="file upload"></SuccessTransaction>
+      </div>
 
     </div>
   </main>

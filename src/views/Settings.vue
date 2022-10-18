@@ -6,12 +6,14 @@ import LogOut from "../components/LogOut.vue";
 export default {
     data() {
         return {
+          post:{
+            otp: "",
+            otpMessage: ''
+          },
             showDialog: false,
             showDeleted:false,
             otpEmpty:false,
-            otpMessage: '',
-            phoneNumber: "xxxx1234",
-            otp: ""
+            phoneNumber: "xxxx1234"
         };
     },
     methods: {
@@ -22,7 +24,7 @@ export default {
             this.showDialog = false
         },
         deleteAccount(){
-            if(this.otp.length == 0){
+            if(this.getOTP.length == 0){
                this.otpMessage = "OTP not entered"
                this.otpEmpty = true
             }
@@ -35,6 +37,10 @@ export default {
           console.log(value)
           this.$router.push({ name: 'logOut', params: { logout: value } })
         }
+    }, computed:{
+      getOTP(){
+        return this.otp
+      }
     }
 };
 </script>
@@ -71,7 +77,7 @@ export default {
           Enter OTP in the box below to delete your account.</p>
           <input type="number" v-model="otp" name ='otp'  class="form-control" id="otp" placeholder="Enter OTP">
           <a id="resend" class="float-right" href="#">Resend OTP</a>
-          <p class="otpEmpty float-left" v-show="otpEmpty" href="#">{{ otpMessage }}</p>
+          <p class="otpEmpty float-left" v-if="otpEmpty" href="#">{{ otpMessage }}</p>
         </div>
         <div class="modal-footer">
         <button class="btn btn-secondary" type="button"
@@ -101,7 +107,7 @@ export default {
           <h5>We have now permanently deleted your user account.</h5>
         </div>
         <div class="modal-footer">
-       
+          <LogOut @logout="logout"></LogOut>
         </div>
       </div>
     </div>

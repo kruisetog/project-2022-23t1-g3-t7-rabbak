@@ -1,7 +1,7 @@
 <script setup>
 import { RouterLink, RouterView } from "vue-router";
 import custNav from "./components/custNav.vue";
-import staffNav from "./components/staffNav.vue"
+import staffNav from "./components/staffNav.vue";
 </script>
 
 <template>

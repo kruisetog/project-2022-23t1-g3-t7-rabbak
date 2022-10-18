@@ -9,9 +9,7 @@ export default {
   data() {
     var filelist = [];
     return { 
-      ft: 'text/csv',
       filetype: ['text/csv', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,', 'application/vnd.ms-excel'],
-      file : File,
       filelist: [],
       showSuccess: false
     } 
@@ -37,9 +35,8 @@ export default {
     },
     upload(){
       this.showSuccess=true;
-      this.file = this.filelist[0];
-      this.ft = this.filelist[0].type
-      console.log(this.file)
+      console.log(this.filelist[0])
+      // this.ft = this.filelist[0].type
       // console.log(this.file.type in this.filetype)
       // if(this.ft in this.filetype == false){
       //   alert('only accept csv/xlxs files')

@@ -6,6 +6,9 @@ import SuccessTransaction from "../components/SuccessTransaction.vue";
 export default {
     data() {
       return{
+        post:{
+          showSuccess: true
+        },
         date:"",
         mcc: "",
         currency: "1",

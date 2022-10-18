@@ -101,7 +101,7 @@ export default {
           <h5>We have now permanently deleted your user account.</h5>
         </div>
         <div class="modal-footer">
-       
+          <LogOut @logout="logout"></LogOut>
         </div>
       </div>
     </div>

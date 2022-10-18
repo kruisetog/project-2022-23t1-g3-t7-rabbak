@@ -59,9 +59,12 @@ const router = createRouter({
       meta: {
         hideCustNav: true,
         hideStaffNav: true
-       }
-    },
-
+       },
+       props: (route) => {
+        const logoutText = route.params.logout; 
+        return { logoutText }
+      }
+    }
   ],
   linkExactActiveClass: "selected",
 });

@@ -1,22 +1,32 @@
 <script setup>
-import { useRoute } from 'vue-router';
-const route = useRoute();  
-const logout = route.params.logout;
+// import { useRoute } from 'vue-router';
+// const route = useRoute();  
+// const logout = route.params.logout;  
+defineProps({
+    logoutText:{
+            required:true,
+            type:Boolean
+        }
+})
 </script>
 
 <script>
+
+
 export default {
     data() {
         return {
-            role:"customer",
+            post:{
+                role:""
+            },
             username:"",
             password:"",
             logOutMessage: "",
             message: "",
             logout: false
         };
-    },
-    name: 'logout',
+    }, 
+    
     methods: {
         login() {
            if(this.role == "customer"){
@@ -26,14 +36,15 @@ export default {
             this.$router.push('uploadFile')
            }
         },
-        logout(value){
-          console.log(value)
+        logout(value){  
+            console.log(value)
         }
     }
-    // mounted(){
-    //     this.$root.$on("Successfully logged out", (msg) =>{
-    //         console.log(msg)
-    //     })
+    // , 
+    // computed:{
+    //     getRole(){
+    //         return this.role
+    //     }
     // }
 };
 </script>
@@ -46,7 +57,7 @@ export default {
             </a>
             </h2> 
             <br>
-            <h6 class="text-center" v-show="logout">Successfully Logged Out</h6> 
+            <h6 class="text-center" v-show="logoutText">Successfully Logged Out</h6> 
             <br> 
             <h6>{{message}}</h6>
             <h5 class="text-center">Login</h5>
@@ -59,13 +70,13 @@ export default {
 			<div class="form-group">
 				<div class="row ml-1">
 				<div class="form-check col-6 mr-3">
-                    <input class="form-check-input" value="customer" type="radio" name="roleSelect" id="customer" v-model="role">
+                    <input v-model="role"   class="form-check-input" value="customer" type="radio" name="roleSelect" id="customer" >
 					<label class="form-check-label" for="customer">
                     Customer
 					</label>
 				  </div>
 				  <div class="form-check col-6">
-					<input class="form-check-input" type="radio" value="staff" name="roleSelect" id="staff" v-model="role">
+					<input v-model="role" class="form-check-input" type="radio" value="staff" name="roleSelect" id="staff">
 					<label class="form-check-label" for="staff">
 					  Staff
 					</label>

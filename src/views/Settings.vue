@@ -17,14 +17,8 @@ export default {
         };
     },
     methods: {
-        toggleModal() {
-            this.showDialog = true
-        },
-        close(){
-            this.showDialog = false
-        },
-        deleteAccount(){
-            if(this.getOTP.length == 0){
+      deleteAccount(){
+            if(this.otp == undefined){
                this.otpMessage = "OTP not entered"
                this.otpEmpty = true
             }
@@ -33,15 +27,22 @@ export default {
                 this.showDeleted = true
             }  
         },
+        toggleModal() {
+            this.showDialog = true
+        },
+        close(){
+            this.showDialog = false
+        },
         logout(value){
           console.log(value)
           this.$router.push({ name: 'logOut', params: { logout: value } })
         }
-    }, computed:{
-      getOTP(){
-        return this.otp
-      }
     }
+    // , computed:{
+    //   getOTP(){
+    //     return this.otp
+    //   }
+    // }
 };
 </script>
 

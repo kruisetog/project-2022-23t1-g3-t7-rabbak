@@ -23,7 +23,9 @@ export default {
             password:"",
             logOutMessage: "",
             message: "",
-            logout: false
+            logout: false,
+            selectRole: false,
+            lgtext: this.logoutText
         };
     }, 
     
@@ -34,6 +36,10 @@ export default {
            }
            else if(this.role == "staff"){
             this.$router.push('uploadFile')
+           }
+           else{
+            this.lgtext = false
+            this.selectRole = true
            }
         },
         logout(value){  
@@ -57,7 +63,8 @@ export default {
             </a>
             </h2> 
             <br>
-            <h6 class="text-center" v-show="logoutText">Successfully Logged Out</h6> 
+            <h6 class="text-center" v-if="lgtext" v-show="logoutText">Successfully Logged Out</h6> 
+            <h6 class="text-center" v-if="selectRole">Please select a role</h6> 
             <br> 
             <h6>{{message}}</h6>
             <h5 class="text-center">Login</h5>

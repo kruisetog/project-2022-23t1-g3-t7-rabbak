@@ -1,3 +1,16 @@
+<script>
+export default {
+    data() {
+ 
+    },
+    methods: {
+        logout(){
+            this.$router.push({ name: 'logOut', params: { logout: 'logout' } })
+        }
+    }
+};
+</script>
+
 <template>
     <main class="nav-bar">
         <div class="nav">
@@ -6,20 +19,26 @@
             </a>
             <ul>
                 <li>
-                    <RouterLink to="/activity">
-                        <span>
-                            <i class="icon-home primary font-large-2"></i>
-                        </span>
-                        <a>My Points activity</a>
+                    <RouterLink to="/uploadFile">
+                    <span>
+                        <i class="icon-upload-alt primary font-large-2"></i>
+                    </span>
+                    <a>File Upload</a>
                     </RouterLink>
                 </li>
                 <li>
-                    <RouterLink to="/settings">
+                    <RouterLink to="/addTransaction">
                     <span>
-                        <i class="icon-gear primary font-large-2"></i>
+                        <i class="icon-list-alt primary font-large-2"></i>
                     </span>
-                    <a>Settings</a>
+                    <a>Add Transaction</a>
                     </RouterLink>
+                </li>
+                <li @click="logout">
+                    <span>
+                        <i class="icon-signout primary font-large-2"></i>
+                    </span>
+                    <a>Log Out</a>
                 </li>
             </ul>
         </div>
@@ -86,4 +105,5 @@ ul{
 a:hover{
     text-decoration: none;
 }
+
 </style>

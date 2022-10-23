@@ -1,24 +1,24 @@
+<script setup>
+import LogOut from "../components/LogOut.vue";
+</script>
+
 <script>
 export default {
     data() {
         return {
+          post:{
+            otp: "",
+            otpMessage: ''
+          },
             showDialog: false,
             showDeleted:false,
             otpEmpty:false,
-            otpMessage: '',
-            phoneNumber: "xxxx1234",
-            otp: ""
+            phoneNumber: "xxxx1234"
         };
     },
     methods: {
-        toggleModal() {
-            this.showDialog = true
-        },
-        close(){
-            this.showDialog = false
-        },
-        deleteAccount(){
-            if(this.otp.length == 0){
+      deleteAccount(){
+            if(this.otp == undefined){
                this.otpMessage = "OTP not entered"
                this.otpEmpty = true
             }
@@ -26,8 +26,23 @@ export default {
                 this.showDialog = false
                 this.showDeleted = true
             }  
+        },
+        toggleModal() {
+            this.showDialog = true
+        },
+        close(){
+            this.showDialog = false
+        },
+        logout(value){
+          console.log(value)
+          this.$router.push({ name: 'logOut', params: { logout: value } })
         }
     }
+    // , computed:{
+    //   getOTP(){
+    //     return this.otp
+    //   }
+    // }
 };
 </script>
 
@@ -48,11 +63,7 @@ export default {
     </div>
     </div>
     <hr>
-    <div class="float-right mt-5 pt-5">
-    <span class="logout">
-        <i class="icon-signout primary font-large-2"></i>
-    <a>LOGOUT</a></span>
-    </div>
+    <LogOut @logout="logout"></LogOut>
    
    <div v-show="showDialog">
     <div class="modal show" style="display:block;">
@@ -67,7 +78,7 @@ export default {
           Enter OTP in the box below to delete your account.</p>
           <input type="number" v-model="otp" name ='otp'  class="form-control" id="otp" placeholder="Enter OTP">
           <a id="resend" class="float-right" href="#">Resend OTP</a>
-          <p class="otpEmpty float-left" v-show="otpEmpty" href="#">{{ otpMessage }}</p>
+          <p class="otpEmpty float-left" v-if="otpEmpty" href="#">{{ otpMessage }}</p>
         </div>
         <div class="modal-footer">
         <button class="btn btn-secondary" type="button"
@@ -97,10 +108,7 @@ export default {
           <h5>We have now permanently deleted your user account.</h5>
         </div>
         <div class="modal-footer">
-        <button class="w-100 btn btn-lg btn-secondary" type="button"
-            @click="close">
-            LOGOUT
-        </button>
+          <LogOut @logout="logout"></LogOut>
         </div>
       </div>
     </div>
@@ -120,14 +128,6 @@ export default {
   padding-left: 20px;
   padding-right: 20px;
 } 
-
-.logout{
-    color: lightgrey !important;
-}
-
-.logout:hover{
-    cursor:pointer;
-}
 
 #resend{
     color: lightgrey !important;

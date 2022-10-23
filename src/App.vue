@@ -1,12 +1,14 @@
 <script setup>
 import { RouterLink, RouterView } from "vue-router";
 import custNav from "./components/custNav.vue";
+import staffNav from "./components/staffNav.vue";
 </script>
 
 <template>
   <div class="main-cont">
     <div class="nav-side">
-      <custNav></custNav>
+      <custNav v-if="!$route.meta.hideCustNav"></custNav>
+      <staffNav v-if="!$route.meta.hideStaffNav"></staffNav>
     </div>
     <div class="large-side">
       <RouterView />
@@ -25,3 +27,5 @@ import custNav from "./components/custNav.vue";
   padding-right:15px;
 }
 </style>
+
+ 

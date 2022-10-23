@@ -22,10 +22,11 @@ defineProps({
 <template>
     <div class="row campaign pt-3">
         <div class="col-6">
-            <h6 class="text-uppercase">{{campaignName}}<span class="progressText">{{progress}}%</span></h6>
+            <h6 class="text-capitalize">{{campaignName}}</h6>
             <div class="progress-bar-cont">
-                <div class="progress-bar" :style="'width: '+progress + '%'"></div>
+                <div class="progress-bar" :content="ddd" :style="'width: '+progress + '%'"></div>
             </div>
+            <span class="progress-text">{{progress}}%</span>
         </div>
         <div class="col-6">
             <span class="campaignName text-capitalize">{{campaignDesc}}</span>
@@ -55,5 +56,9 @@ defineProps({
     border-radius: 10px;
     color: #a8bcd6!important;
     background-color: #a8bcd6!important;
+}
+
+.progress-text{
+    float:right;
 }
 </style>

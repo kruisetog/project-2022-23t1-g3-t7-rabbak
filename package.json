@@ -15,5 +15,9 @@
   "devDependencies": {
     "@vitejs/plugin-vue": "^3.0.3",
     "vite": "^3.0.9"
+  },
+  "optionalDependencies": {
+    "esbuild-android-arm64": "^0.15.12",
+    "fsevents": "*"
   }
 }

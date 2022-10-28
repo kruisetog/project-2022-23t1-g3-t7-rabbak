@@ -4,6 +4,7 @@ import Settings from "../views/Settings.vue";
 import Login from "../views/Login.vue"
 import uploadFile from "../views/UploadFile.vue"
 import addTransaction from "../views/AddTransaction.vue"
+import Cards from "../views/Cards.vue"
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -21,6 +22,15 @@ const router = createRouter({
       path: "/activity",
       name: "My Points Activity",
       component: PointsActivity,
+      meta: {
+        hideCustNav: false,
+        hideStaffNav: true
+       }
+    },
+    {
+      path: "/cards",
+      name: "Cards",
+      component: Cards,
       meta: {
         hideCustNav: false,
         hideStaffNav: true
@@ -52,7 +62,8 @@ const router = createRouter({
         hideCustNav: true,
         hideStaffNav: false
        }
-    },{
+    },
+    {
       path: "/:logout",
       name: "logOut",
       component: Login,

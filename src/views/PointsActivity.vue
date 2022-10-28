@@ -16,10 +16,10 @@ import TotalCard from "../components/TotalCard.vue";
       </div>
       <div class="col-4 myCards overflow-auto"> 
         <h3>My Cards <i class="icon-credit-card primary font-large-2"></i></h3>
-        <label><input type="radio" :value="all" name="mycards" v-model="mycardsModel" selected/> Show All </label> 
+        <label><input type="radio" :value='all' name="mycards" v-model="mycardsModel" v-on:change="cardSelected" selected/> Show All </label> 
         <br>
         <template v-for="(card, index) in myCards">
-          <label><input type="radio" :value="index" name="mycards" v-model="mycardsModel"/> {{card.cardNumber}} ({{card.cardType}}) </label> 
+          <label><input type="radio" :value="index" name="mycards" v-model="mycardsModel" v-on:change="cardSelected"/> {{card.cardNumber}} ({{card.cardType}}) </label> 
           <br>
         </template>
       </div>
@@ -37,19 +37,12 @@ import TotalCard from "../components/TotalCard.vue";
               <th scope="col">Benefit</th>
             </tr>
           </thead>
-          <TransactionTableRow>
-            <template #date>6th Sep 2022</template>
-            <template #description>Flight ticket to MLA</template>
-            <template #cardType>Freedom</template>
-            <template #amount>$2,000</template>
-            <template #benefit>3,041,730 miles</template>
+          <TransactionTableRow date="6th Sep 2022" desc="Flight ticket to MLA" 
+          cardType="Freedom" amount="$2,000" benefit="3,041,730 miles">
           </TransactionTableRow>
-          <TransactionTableRow excludeProcessing=true>
-            <template #date>7th Sep 2022</template>
-            <template #description>Ezlink Top up</template>
-            <template #cardType>Platinum Miles</template>
-            <template #amount>$10</template>
-            <template #benefit>-</template>
+         
+          <TransactionTableRow excludeProcessing=true date="7th Sep 2022" desc="Ezlink Top up" 
+          cardType="Platinum Miles" amount="$10" benefit="-">
           </TransactionTableRow>
         </table>
       </div>
@@ -125,6 +118,13 @@ export default {
       myCards: myCards 
     }
   },
+  methods: {
+    cardSelected: function(e) {
+            const selectedIndex = e.target.value;
+            console.log(selectedIndex)
+            
+        }
+    }
 }
 
 </script>

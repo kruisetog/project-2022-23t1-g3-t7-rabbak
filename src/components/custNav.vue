@@ -1,3 +1,13 @@
+<script>
+export default {
+    methods: {
+        logout(){
+            this.$router.push({ name: 'logOut', params: { logout: 'logout' } })
+        }
+    }
+};
+</script>
+
 <template>
     <main class="nav-bar">
         <div class="nav">
@@ -14,12 +24,26 @@
                     </RouterLink>
                 </li>
                 <li>
+                    <RouterLink to="/cards">
+                        <span>
+                            <i class="icon-credit-card primary font-large-2"></i>
+                        </span>
+                        <a>My Cards</a>
+                    </RouterLink>
+                </li>
+                <li>
                     <RouterLink to="/settings">
                     <span>
                         <i class="icon-gear primary font-large-2"></i>
                     </span>
                     <a>Settings</a>
                     </RouterLink>
+                </li>
+                <li @click="logout">
+                    <span>
+                        <i class="icon-signout primary font-large-2"></i>
+                    </span>
+                    <a>Log Out</a>
                 </li>
             </ul>
         </div>

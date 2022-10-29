@@ -48,6 +48,7 @@ export default {
     async mounted(){
       await this.getCardTransactions()
       await this.getCards()
+      await this.getCampaigns()
     }
 }
 

@@ -48,6 +48,9 @@ export default {
           this.myCards = usercardsResponse['data']['Cards']
       }
     },
+    async mounted(){
+      await this.getCards()
+    },
     components:{
       MyCardBlock
     }

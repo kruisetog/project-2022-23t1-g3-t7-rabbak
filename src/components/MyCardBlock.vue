@@ -3,12 +3,8 @@ const props = defineProps({
     cardid: {
         type: String,
         required: true
-    },
-    cardNum:{
-        type: String,
-        required: true
-    },
-    cardType:{
+    }
+    ,cardNum:{
         type: String,
         required: true
     }
@@ -18,13 +14,12 @@ const props = defineProps({
 <template>
     <tr>
         <td>
-           {{cardNum}}
+            <slot name="cardNum"></slot>
         </td>
         <td>
-            {{cardType}}
+            <slot name="cardType"></slot>
         </td>
         <td>
-            <!-- <slot name="deleteCard"></slot> -->
             <button :bind=cardNum :value=cardid v-on:click.native="deleteCard($event)" class="btn btn-danger">Delete Card</button>
         </td>
     </tr>

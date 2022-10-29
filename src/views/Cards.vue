@@ -1,5 +1,6 @@
 <script setup>
 import MyCardBlock from "../components/MyCardBlock.vue";
+import axios from "axios";
 </script>
 
 <script>
@@ -16,12 +17,14 @@ export default {
           otpEmpty:false,
           phoneNumber: "xxxx1234",
           showDeleted: false,
-          deletedcardNum: ''
+          deletedcardNum: '',
+          myCards: {}
         };
     },
     methods: {
         showDeleteCard(value, value2){
             this.showDeleteModal = true;
+            console.log(value, value2);
             this.deletecardValue = value;
             this.deletedcardNum = value2
         },
@@ -42,6 +45,13 @@ export default {
                 this.showDeleted = true
             }  
         },
+        async getCards(){
+          const usercardsResponse = await axios.get("https://wn67is82a0.execute-api.us-east-1.amazonaws.com/1/users/AA8EDA5B03B3422B819FE303E5CA0C18")
+          this.myCards = usercardsResponse['data']['Cards']
+      }
+    },
+    async mounted(){
+      await this.getCards()
     },
     components:{
       MyCardBlock
@@ -65,8 +75,10 @@ export default {
               <th scope="col">Actions</th>
             </tr>
           </thead>
-          <MyCardBlock cardNum="xxxx 1234" cardType="freedom" cardid="1" @showDeleteCard="showDeleteCard"></MyCardBlock>
-          <MyCardBlock cardNum="xxxx 5678" cardType="freedom" cardid="2" @showDeleteCard="showDeleteCard"></MyCardBlock>
+          <MyCardBlock @showDeleteCard="showDeleteCard" v-for="card in myCards" v-bind:cardid="card['Card_ID']" v-bind:cardNum="card['Card_Pan']">
+            <template #cardNum>{{card['Card_Pan']}}</template>
+            <template #cardType>{{card['Name']}}</template>
+          </MyCardBlock>
         </table>
       </div>
     </div>

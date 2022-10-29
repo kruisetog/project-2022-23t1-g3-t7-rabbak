@@ -1,6 +1,7 @@
 <script setup>
 import SuccessTransaction from "../components/SuccessTransaction.vue";
 import {readFile, read, utils} from 'xlsx';
+import { Storage } from 'aws-amplify';
 </script>
 
 
@@ -36,6 +37,13 @@ export default {
     upload(){
       this.showSuccess=true;
       console.log(this.filelist[0])
+      Storage.put(this.filelist[0].name, this.filelist[0], {
+      }).then((data)=>{
+        console.log(data);
+        this.showSuccess=true;
+      }).catch((err)=>{
+        console.log(err);
+      })
       // this.ft = this.filelist[0].type
       // console.log(this.file.type in this.filetype)
       // if(this.ft in this.filetype == false){

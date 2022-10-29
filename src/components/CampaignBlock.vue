@@ -1,36 +1,36 @@
 <script setup>
-defineProps({
-    campaignName: {
-        type: String,
-        required: true
-    },
-    expiryText: {
-        type: String,
-        required: true
-    },
-    progress: {
-        type: String,
-        required: true
-    },
-    campaignDesc:{
-        type: String,
-        required: true
-    }
-})
+// defineProps({
+//     campaignName: {
+//         type: String,
+//         required: true
+//     },
+//     expiryText: {
+//         type: String,
+//         required: true
+//     },
+//     progress: {
+//         type: String,
+//         required: true
+//     },
+//     campaignDesc:{
+//         type: String,
+//         required: true
+//     }
+// })
 </script>
 
 <template>
     <div class="row campaign pt-3">
         <div class="col-6">
-            <h6 class="text-capitalize">{{campaignName}}</h6>
-            <div class="progress-bar-cont">
+            <h6 class="text-capitalize"><slot name="campaignName"></slot></h6>
+            <!-- <div class="progress-bar-cont">
                 <div class="progress-bar" :content="ddd" :style="'width: '+progress + '%'"></div>
             </div>
-            <span class="progress-text">{{progress}}%</span>
+            <span class="progress-text">{{progress}}%</span> -->
         </div>
         <div class="col-6">
-            <span class="campaignName text-capitalize">{{campaignDesc}}</span>
-            <div class="expire">Expiring in {{expiryText}}</div>
+            <span class="campaignName text-capitalize"><slot name="campaignDesc"></slot></span>
+            <div class="expire">Campaign Ends On <slot name="endDate"></slot></div>
         </div>
     </div>
     <br>

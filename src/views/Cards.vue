@@ -16,7 +16,8 @@ export default {
           otpEmpty:false,
           phoneNumber: "xxxx1234",
           showDeleted: false,
-          deletedcardNum: ''
+          deletedcardNum: '',
+          myCards: {}
         };
     },
     methods: {
@@ -42,6 +43,10 @@ export default {
                 this.showDeleted = true
             }  
         },
+        async getCards(){
+          const usercardsResponse = await axios.get("https://wn67is82a0.execute-api.us-east-1.amazonaws.com/1/users/AA8EDA5B03B3422B819FE303E5CA0C18")
+          this.myCards = usercardsResponse['data']['Cards']
+      }
     },
     components:{
       MyCardBlock
@@ -65,8 +70,9 @@ export default {
               <th scope="col">Actions</th>
             </tr>
           </thead>
-          <MyCardBlock cardNum="xxxx 1234" cardType="freedom" cardid="1" @showDeleteCard="showDeleteCard"></MyCardBlock>
-          <MyCardBlock cardNum="xxxx 5678" cardType="freedom" cardid="2" @showDeleteCard="showDeleteCard"></MyCardBlock>
+          <MyCardBlock v-for="card in myCards" v-bind:cardNum="card.Card_Pan" v-bind:cardType="card.Name"
+          v-bind:cardid="card.Card_ID" @showDeleteCard="showDeleteCard">
+          </MyCardBlock>
         </table>
       </div>
     </div>

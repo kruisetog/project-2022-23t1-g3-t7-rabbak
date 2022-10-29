@@ -5,6 +5,53 @@ import TotalCard from "../components/TotalCard.vue";
 import axios from "axios";
 </script>
 
+<script>
+export default {
+  data() {
+    return {
+      myCards: {},
+      transactions: {},
+      points: 0,
+      miles: 0,
+      cashback: 0,
+      campaigns: {}
+    }
+  },
+  methods: {
+    cardSelected: function(e) {
+            const selectedIndex = e.target.value;
+            // console.log(selectedIndex)
+            if(parseInt(selectedIndex) == selectedIndex){
+              this.getCardTransactions(selectedIndex)
+            }
+            else{
+              //show all transactions
+            }
+        },
+    async getCardTransactions(index){
+      const transactionsResponse = await axios.get("https://wn67is82a0.execute-api.us-east-1.amazonaws.com/1/users/AA8EDA5B03B3422B819FE303E5CA0C18/card/" + index + "/transactions")
+      this.transactions = transactionsResponse['data']
+    },
+    async getCards(){
+      const usercardsResponse = await axios.get("https://wn67is82a0.execute-api.us-east-1.amazonaws.com/1/users/AA8EDA5B03B3422B819FE303E5CA0C18")
+      this.points = usercardsResponse['data']['Points_Total']
+      this.miles = usercardsResponse['data']['Miles_Total']
+      this.cashback = usercardsResponse['data']['Cashback_Total']
+      this.myCards = usercardsResponse['data']['Cards']
+    },
+    async getCampaigns(){
+      const campaignDetails = await axios.get("https://wn67is82a0.execute-api.us-east-1.amazonaws.com/1/campaigns")
+      this.campaigns = campaignDetails['data']
+    }
+    },
+    async mounted(){
+      await this.getCardTransactions()
+      await this.getCards()
+    }
+}
+
+</script>
+
 <template>
   <main class="main-content">
     <div class="row">
@@ -39,11 +86,11 @@ import axios from "axios";
             </tr>
           </thead>
           <TransactionTableRow v-for="transaction in transactions">
-            <template #date>{{transaction['Transaction Date']}}</template>
-            <template #description>Flight ticket to MLA</template>
+            <template #date>{{transaction['Transaction_Date']}}</template>
+            <template #description></template>
             <template #cardType>Freedom</template>
             <template #amount>{{transaction['Currency']}} {{transaction['Amount']}}</template>
-            <template #benefit>3,041,730 miles</template>
+            <template #benefit></template>
           </TransactionTableRow>
         </table>
       </div>
@@ -51,8 +98,11 @@ import axios from "axios";
       <div class="col-lg-5">
         <br><br>
         <h5>Ongoing Campaigns</h5>
-        <CampaignBlock campaignName="Buy everything at shopee" campaignDesc="Earn 5% more cashback" expiryText="5 days" progress="50"/>
-        <CampaignBlock campaignName="Salmon cafe opening" campaignDesc="Earn 5% more cashback with minimum $100 spent" expiryText="2 weeks" progress="60"/>
+        <CampaignBlock v-for="campaign in campaigns">
+          <template #campaignName>{{campaign['Name']}}</template>
+          <template #campaignDesc>{{campaign['Description']}}</template>
+          <template #endDate>{{campaign['End_Date']}}</template>
+        </CampaignBlock>
       </div>
 
     </div>
@@ -76,77 +126,3 @@ import axios from "axios";
 
 
 
-<script>
-export default {
-  data() {
-  //   var myCards = [
-  //     {
-  //     "cardNumber": "****1234",
-  //     "cardType": "Freedom"
-  //   }, {
-  //     "cardNumber": "****5678",
-  //     "cardType": "SCIS Miles"
-  //   }, {
-  //     "cardNumber": "****1578",
-  //     "cardType": "Freedom"
-  //   }, {
-  //     "cardNumber": "****1578",
-  //     "cardType": "Freedom"
-  //   }, 
-  //   {
-  //     "cardNumber": "****1578",
-  //     "cardType": "Freedom"
-  //   }, 
-  //   {
-  //     "cardNumber": "****1578",
-  //     "cardType": "Freedom"
-  //   },  {
-  //     "cardNumber": "****1578",
-  //     "cardType": "Freedom"
-  //   },  {
-  //     "cardNumber": "****1578",
-  //     "cardType": "Freedom"
-  //   },  {
-  //     "cardNumber": "****1578",
-  //     "cardType": "Freedom"
-  //   },  {
-  //     "cardNumber": "****1578",
-  //     "cardType": "Freedom"
-  //   }, 
-    
-  // ]
-    return {
-      myCards: {},
-      transactions: {},
-      points: 0,
-      miles: 0,
-      cashback: 0,
-    }
-  },
-  methods: {
-    cardSelected: function(e) {
-            const selectedIndex = e.target.value;
-            console.log(selectedIndex)
-            if(parseInt(selectedIndex) == selectedIndex)
-            this.getCardTransactions(selectedIndex)
-            
-        },
-    async getCardTransactions(index){
-      const transactionsResponse = await axios.get("https://wn67is82a0.execute-api.us-east-1.amazonaws.com/1/users/AA8EDA5B03B3422B819FE303E5CA0C18/card/" + index + "/transactions")
-      this.transactions = transactionsResponse['data']
-    },
-    async getCards(){
-      const usercardsResponse = await axios.get("https://wn67is82a0.execute-api.us-east-1.amazonaws.com/1/users/AA8EDA5B03B3422B819FE303E5CA0C18")
-      this.points = usercardsResponse['data']['Points_Total']
-      this.miles = usercardsResponse['data']['Miles_Total']
-      this.cashback = usercardsResponse['data']['Cashback_Total']
-      this.myCards = usercardsResponse['data']['Cards']
-    }
-    },
-    async mounted(){
-      await this.getCardTransactions()
-      await this.getCards()
-    }
-}
-
-</script>

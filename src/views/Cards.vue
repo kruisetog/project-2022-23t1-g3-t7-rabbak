@@ -70,8 +70,9 @@ export default {
               <th scope="col">Actions</th>
             </tr>
           </thead>
-          <MyCardBlock v-for="card in myCards" v-bind:cardNum="card.Card_Pan" v-bind:cardType="card.Name"
-          v-bind:cardid="card.Card_ID" @showDeleteCard="showDeleteCard">
+          <MyCardBlock v-for="card in myCards" v-bind:cardid="card['Card_ID']" v-bind:cardNum="card['Card_Pan']">
+            <template #cardNum>{{card['Card_Pan']}}</template>
+            <template #cardType>{{card['Name']}}</template>
           </MyCardBlock>
         </table>
       </div>

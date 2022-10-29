@@ -2,6 +2,7 @@
 import TransactionTableRow from "../components/TransactionTableRow.vue";
 import CampaignBlock from "../components/CampaignBlock.vue";
 import TotalCard from "../components/TotalCard.vue";
+import axios from "axios";
 </script>
 
 <template>
@@ -123,14 +124,14 @@ export default {
             const selectedIndex = e.target.value;
             console.log(selectedIndex)
             
-        }
+        },
+    async getTransactions(){
+      const transactionsResponse = await axios.get("https://wn67is82a0.execute-api.us-east-1.amazonaws.com/1/users/AA8EDA5B03B3422B819FE303E5CA0C18/card/1/transactions")
+      console.log(transactionsResponse)
+    }
     },
-    mounted(){
-      axios
-      .get('https://wn67is82a0.execute-api.us-east-1.amazonaws.com/1/users/AA8EDA5B03B3422B819FE303E5CA0C18/card/1/transactions')
-      .then(response => (
-        console.log(response)
-        ))
+    async mounted(){
+      await this.getTransactions()
     }
 }
 

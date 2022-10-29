@@ -124,6 +124,13 @@ export default {
             console.log(selectedIndex)
             
         }
+    },
+    mounted(){
+      axios
+      .get('https://wn67is82a0.execute-api.us-east-1.amazonaws.com/1/users/AA8EDA5B03B3422B819FE303E5CA0C18/card/1/transactions')
+      .then(response => (
+        console.log(response)
+        ))
     }
 }
 

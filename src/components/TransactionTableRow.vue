@@ -4,26 +4,6 @@ defineProps({
         type: Boolean,
         required: false,
         default: false
-    } ,
-    date: {
-        type: String,
-        required: true
-    },
-    desc:{
-        type: String,
-        required: true
-    },
-    cardType:{
-        type: String,
-        required: true
-    },
-    amount:{
-        type: String,
-        required: true
-    },
-    benefit:{
-        type: String,
-        required: true
     }
 })
 </script>
@@ -31,19 +11,19 @@ defineProps({
 <template>
     <tr v-bind:style=" excludeProcessing ? 'background-color:#ffd8d4;' : 'background-color:none;' ">
         <td>
-            {{date}}
+           <slot name="date"></slot>
         </td>
         <td>
-           {{desc}}
+            <slot name="description"></slot>
         </td>
         <td>
-            {{cardType}}
+            <slot name="cardType"></slot>
         </td>
         <td>
-            {{amount}}
+            <slot name="amount"></slot>
         </td>
         <td>
-            {{benefit}}
+            <slot name="benefit"></slot>
         </td>
     </tr>
 </template>

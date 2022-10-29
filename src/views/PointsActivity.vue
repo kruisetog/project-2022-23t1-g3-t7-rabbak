@@ -12,15 +12,15 @@ import axios from "axios";
         <h1>My points activity</h1>
         <br>
         <div class="row">
-          <TotalCard cashbacks="-" loyaltyPoints="500" miles="3,041,730" />
+          <TotalCard v-bind:cashbacks="cashback" v-bind:loyaltyPoints="points" v-bind:miles="miles" />
         </div>
       </div>
       <div class="col-4 myCards overflow-auto"> 
         <h3>My Cards <i class="icon-credit-card primary font-large-2"></i></h3>
         <label><input type="radio" :value='all' name="mycards" v-model="mycardsModel" v-on:change="cardSelected" selected/> Show All </label> 
         <br>
-        <template v-for="(card, index) in myCards">
-          <label><input type="radio" :value="index" name="mycards" v-model="mycardsModel" v-on:change="cardSelected"/> {{card.cardNumber}} ({{card.cardType}}) </label> 
+        <template v-for="card in myCards">
+          <label><input type="radio" v-bind:value="card.Card_ID" name="mycards" v-model="mycardsModel" v-on:change="cardSelected"/> {{card.Card_Pan}} ({{card.Name}}) </label> 
           <br>
         </template>
       </div>
@@ -38,12 +38,12 @@ import axios from "axios";
               <th scope="col">Benefit</th>
             </tr>
           </thead>
-          <TransactionTableRow date="6th Sep 2022" desc="Flight ticket to MLA" 
-          cardType="Freedom" amount="$2,000" benefit="3,041,730 miles">
-          </TransactionTableRow>
-         
-          <TransactionTableRow excludeProcessing=true date="7th Sep 2022" desc="Ezlink Top up" 
-          cardType="Platinum Miles" amount="$10" benefit="-">
+          <TransactionTableRow v-for="transaction in transactions">
+            <template #date>{{transaction['Transaction Date']}}</template>
+            <template #description>Flight ticket to MLA</template>
+            <template #cardType>Freedom</template>
+            <template #amount>{{transaction['Currency']}} {{transaction['Amount']}}</template>
+            <template #benefit>3,041,730 miles</template>
           </TransactionTableRow>
         </table>
       </div>
@@ -79,59 +79,73 @@ import axios from "axios";
 <script>
 export default {
   data() {
-    var myCards = [
-      {
-      "cardNumber": "****1234",
-      "cardType": "Freedom"
-    }, {
-      "cardNumber": "****5678",
-      "cardType": "SCIS Miles"
-    }, {
-      "cardNumber": "****1578",
-      "cardType": "Freedom"
-    }, {
-      "cardNumber": "****1578",
-      "cardType": "Freedom"
-    }, 
-    {
-      "cardNumber": "****1578",
-      "cardType": "Freedom"
-    }, 
-    {
-      "cardNumber": "****1578",
-      "cardType": "Freedom"
-    },  {
-      "cardNumber": "****1578",
-      "cardType": "Freedom"
-    },  {
-      "cardNumber": "****1578",
-      "cardType": "Freedom"
-    },  {
-      "cardNumber": "****1578",
-      "cardType": "Freedom"
-    },  {
-      "cardNumber": "****1578",
-      "cardType": "Freedom"
-    }, 
+  //   var myCards = [
+  //     {
+  //     "cardNumber": "****1234",
+  //     "cardType": "Freedom"
+  //   }, {
+  //     "cardNumber": "****5678",
+  //     "cardType": "SCIS Miles"
+  //   }, {
+  //     "cardNumber": "****1578",
+  //     "cardType": "Freedom"
+  //   }, {
+  //     "cardNumber": "****1578",
+  //     "cardType": "Freedom"
+  //   }, 
+  //   {
+  //     "cardNumber": "****1578",
+  //     "cardType": "Freedom"
+  //   }, 
+  //   {
+  //     "cardNumber": "****1578",
+  //     "cardType": "Freedom"
+  //   },  {
+  //     "cardNumber": "****1578",
+  //     "cardType": "Freedom"
+  //   },  {
+  //     "cardNumber": "****1578",
+  //     "cardType": "Freedom"
+  //   },  {
+  //     "cardNumber": "****1578",
+  //     "cardType": "Freedom"
+  //   },  {
+  //     "cardNumber": "****1578",
+  //     "cardType": "Freedom"
+  //   }, 
     
-  ]
+  // ]
     return {
-      myCards: myCards 
+      myCards: {},
+      transactions: {},
+      points: 0,
+      miles: 0,
+      cashback: 0,
     }
   },
   methods: {
     cardSelected: function(e) {
             const selectedIndex = e.target.value;
             console.log(selectedIndex)
+            if(parseInt(selectedIndex) == selectedIndex)
+            this.getCardTransactions(selectedIndex)
             
         },
-    async getTransactions(){
-      const transactionsResponse = await axios.get("https://wn67is82a0.execute-api.us-east-1.amazonaws.com/1/users/AA8EDA5B03B3422B819FE303E5CA0C18/card/1/transactions")
-      console.log(transactionsResponse)
+    async getCardTransactions(index){
+      const transactionsResponse = await axios.get("https://wn67is82a0.execute-api.us-east-1.amazonaws.com/1/users/AA8EDA5B03B3422B819FE303E5CA0C18/card/" + index + "/transactions")
+      this.transactions = transactionsResponse['data']
+    },
+    async getCards(){
+      const usercardsResponse = await axios.get("https://wn67is82a0.execute-api.us-east-1.amazonaws.com/1/users/AA8EDA5B03B3422B819FE303E5CA0C18")
+      this.points = usercardsResponse['data']['Points_Total']
+      this.miles = usercardsResponse['data']['Miles_Total']
+      this.cashback = usercardsResponse['data']['Cashback_Total']
+      this.myCards = usercardsResponse['data']['Cards']
     }
     },
     async mounted(){
-      await this.getTransactions()
+      await this.getCardTransactions()
+      await this.getCards()
     }
 }
 

@@ -30,7 +30,9 @@
         </div>
         <div class="col-6 text-center">
             <span class="text-capitalize "><slot name="campaignDesc"></slot></span>
-            <div class="expire">Campaign Ends On <slot name="endDate"></slot></div>
+            <div class="expire">Campaign Ends On 
+                <br>
+                <slot name="endDate"></slot></div>
         </div>
     </div>
     <br>

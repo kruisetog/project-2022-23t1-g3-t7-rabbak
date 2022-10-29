@@ -24,6 +24,7 @@ export default {
     methods: {
         showDeleteCard(value, value2){
             this.showDeleteModal = true;
+            console.log(value1, value2)
             this.deletecardValue = value;
             this.deletedcardNum = value2
         },
@@ -74,7 +75,7 @@ export default {
               <th scope="col">Actions</th>
             </tr>
           </thead>
-          <MyCardBlock v-for="card in myCards" v-bind:cardid="card['Card_ID']" v-bind:cardNum="card['Card_Pan']">
+          <MyCardBlock @showDeleteCard="showDeleteCard" v-for="card in myCards" v-bind:cardid="card['Card_ID']" v-bind:cardNum="card['Card_Pan']">
             <template #cardNum>{{card['Card_Pan']}}</template>
             <template #cardType>{{card['Name']}}</template>
           </MyCardBlock>

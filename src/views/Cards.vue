@@ -24,7 +24,7 @@ export default {
     methods: {
         showDeleteCard(value, value2){
             this.showDeleteModal = true;
-            console.log(value1, value2)
+            console.log(value, value2);
             this.deletecardValue = value;
             this.deletedcardNum = value2
         },

@@ -1,5 +1,6 @@
 <script setup>
 import MyCardBlock from "../components/MyCardBlock.vue";
+import axios from "axios";
 </script>
 
 <script>

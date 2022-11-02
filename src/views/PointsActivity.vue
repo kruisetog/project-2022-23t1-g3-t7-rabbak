@@ -14,8 +14,7 @@ export default {
       points: 0,
       miles: 0,
       cashback: 0,
-      campaigns: {},
-      i: 0 
+      campaigns: {}
     }
   },
   methods: {
@@ -54,14 +53,14 @@ export default {
     async getCardTransactions(index){
       const transactionsResponse = await axios.get("https://wn67is82a0.execute-api.us-east-1.amazonaws.com/1/users/AA8EDA5B03B3422B819FE303E5CA0C18/card/" + index + "/transactions")
       this.transactions = transactionsResponse['data']
-      for (this.i = 0; this.i < this.transactions.length; this.i++) {
-        if(this.transactions[this.i]['Rewards'] == null){
-          this.transactions[this.i]['exclusion'] == true
+      for (let i = 0; i < this.transactions.length; i++) {
+        if(this.transactions[i]['Rewards'] == null){
+          this.transactions[i]['exclusion'] == true
         }
         else{
-          this.transactions[this.i]['exclusion'] == false
+          this.transactions[i]['exclusion'] == false
         }
-        this.transactions[this.i]['Name'] = this.getCardName(this.transactions[this.i]['Card_ID'])
+        this.transactions[i]['Name'] = this.getCardName(this.transactions[this.i]['Card_ID'])
       }
       console.log(this.transactions)
     },
@@ -92,7 +91,7 @@ export default {
       this.campaigns = campaignDetails['data']
     },
     getCardName(card_id){
-      for (i = 0; i < this.myCards.length; i++) {
+      for (let i = 0; i < this.myCards.length; i++) {
         if(this.myCards[i]['Card_ID'] == card_id){
           return this.myCards[i]['Name']
         }

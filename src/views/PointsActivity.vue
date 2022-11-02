@@ -54,14 +54,14 @@ export default {
       const transactionsResponse = await axios.get("https://wn67is82a0.execute-api.us-east-1.amazonaws.com/1/users/AA8EDA5B03B3422B819FE303E5CA0C18/card/" + index + "/transactions")
       this.transactions = transactionsResponse['data']
       console.log(transactionsResponse)
-      for (i = 0; i < this.transactions.length; i++) {
-        if(this.transactions[i]['Rewards'] == null){
-          this.transactions[i]['excluded'] == true
+      for(transaction in this.transactions){
+        if(transaction['Rewards'] == null){
+          transaction['excluded'] = true
         }
         else{
-          this.transactions[i]['excluded'] == false
+          transaction['excluded'] = false
         }
-        this.transactions[i]['Name'] = this.getCardName(this.transactions[i]['Card_ID'])
+        transaction['Name'] = this.getCardName(transaction['Card_ID'])
       }
       console.log(this.transactions)
     },

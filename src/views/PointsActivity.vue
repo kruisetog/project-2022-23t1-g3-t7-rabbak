@@ -85,7 +85,6 @@ export default {
       //   transaction['Name'] = this.getCardName(transaction['Card_ID'])
       // }
       // console.log('this.transactions' , this.transactions)
-    },
     async getCampaigns(){
       const campaignDetails = await axios.get("https://wn67is82a0.execute-api.us-east-1.amazonaws.com/1/campaigns")
       console.log(campaignDetails)

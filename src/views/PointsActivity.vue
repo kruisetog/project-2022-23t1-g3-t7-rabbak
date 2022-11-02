@@ -10,7 +10,7 @@ export default {
   data() {
     return {
       myCards: {},
-      transactions: getUserTransactions(),
+      transactions: this.getUserTransactions(),
       points: 0,
       miles: 0,
       cashback: 0,

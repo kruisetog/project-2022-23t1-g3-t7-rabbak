@@ -51,18 +51,19 @@ export default {
     //   console.log(this.transactions)
     // },
     async getCardTransactions(index){
-      const transactionsResponse = await axios.get("https://wn67is82a0.execute-api.us-east-1.amazonaws.com/1/users/AA8EDA5B03B3422B819FE303E5CA0C18/card/" + index + "/transactions")
-      this.transactions = transactionsResponse['data']
-      for (let i = 0; i < this.transactions.length; i++) {
-        if(this.transactions[i]['Rewards'] == null){
-          this.transactions[i]['exclusion'] == true
+      const transactionsResponse = await axios.get("https://wn67is82a0.execute-api.us-east-1.amazonaws.com/1/users/AA8EDA5B03B3422B819FE303E5CA0C18/card/" + index + "/transactions").then(res =>{
+        this.transactions = res['data']
+        for (let i = 0; i < this.transactions.length; i++) {
+          if(this.transactions[i]['Rewards'] == null){
+            this.transactions[i]['exclusion'] == true
+          }
+          else{
+            this.transactions[i]['exclusion'] == false
+          }
+          this.transactions[i]['Name'] = this.getCardName(this.transactions[i]['Card_ID'])
         }
-        else{
-          this.transactions[i]['exclusion'] == false
-        }
-        this.transactions[i]['Name'] = this.getCardName(this.transactions[this.i]['Card_ID'])
-      }
-      console.log(this.transactions)
+        console.log(this.transactions)
+      })
     },
       // console.log(transactionsResponse)
       // this.transactions.forEach((key)=>{

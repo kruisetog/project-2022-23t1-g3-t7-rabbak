@@ -36,7 +36,7 @@ export default {
       this.myCards = usercardsResponse['data']['Cards']
       console.log(usercardsResponse)
     },
-    async getUserTransactions(index){
+    async getUserTransactions(){
       const transactionsResponse = await axios.get("https://wn67is82a0.execute-api.us-east-1.amazonaws.com/1/users/AA8EDA5B03B3422B819FE303E5CA0C18/transactions")
       this.transactions = transactionsResponse['data']
       for (i = 0; i < this.transactions.length; i++) {

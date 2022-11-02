@@ -53,16 +53,19 @@ export default {
     async getCardTransactions(index){
       const transactionsResponse = await axios.get("https://wn67is82a0.execute-api.us-east-1.amazonaws.com/1/users/AA8EDA5B03B3422B819FE303E5CA0C18/card/" + index + "/transactions")
       this.transactions = transactionsResponse['data']
-      console.log(transactionsResponse)
-      for(transaction in this.transactions){
-        if(transaction['Rewards'] == null){
-          transaction['excluded'] = true
-        }
-        else{
-          transaction['excluded'] = false
-        }
-        transaction['Name'] = this.getCardName(transaction['Card_ID'])
-      }
+      // console.log(transactionsResponse)
+      this.transactions.forEach((key, value)=>{
+        console.log(key, value)
+      })
+      // for(transaction in this.transactions){
+      //   if(transaction['Rewards'] == null){
+      //     transaction['excluded'] = true
+      //   }
+      //   else{
+      //     transaction['excluded'] = false
+      //   }
+      //   transaction['Name'] = this.getCardName(transaction['Card_ID'])
+      // }
       console.log(this.transactions)
     },
     async getCampaigns(){

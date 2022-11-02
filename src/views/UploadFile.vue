@@ -39,7 +39,7 @@ export default {
       }).then((data)=>{
         this.showSuccess=true;
       }).catch((err)=>{
-        console.log(err);
+        alert(err)
       })
     } ,close(value){
         this.showSuccess = false;

@@ -25,12 +25,26 @@ export default {
               this.getCardTransactions(selectedIndex)
             }
             else{
-              //show all transactions
+              this.getUserTransactions()
             }
         },
+      async getUserTransactions(index){
+      const transactionsResponse = await axios.get("https://wn67is82a0.execute-api.us-east-1.amazonaws.com/1/users/AA8EDA5B03B3422B819FE303E5CA0C18/transactions")
+      this.transactions = transactionsResponse['data']
+      console.log(transactionsResponse)
+      for (i = 0; i < this.transactionsResponse.length; i++) {
+        if(this.transactionsResponse[i]['Rewards'] == null){
+          this.transactionsResponse[i]['excluded'] == true
+        }
+        else{
+          this.transactionsResponse[i]['excluded'] == false
+        }
+      }
+    },
     async getCardTransactions(index){
       const transactionsResponse = await axios.get("https://wn67is82a0.execute-api.us-east-1.amazonaws.com/1/users/AA8EDA5B03B3422B819FE303E5CA0C18/card/" + index + "/transactions")
       this.transactions = transactionsResponse['data']
+      console.log(transactionsResponse)
     },
     async getCards(){
       const usercardsResponse = await axios.get("https://wn67is82a0.execute-api.us-east-1.amazonaws.com/1/users/AA8EDA5B03B3422B819FE303E5CA0C18")
@@ -38,10 +52,11 @@ export default {
       this.miles = usercardsResponse['data']['Miles_Total']
       this.cashback = usercardsResponse['data']['Cashback_Total']
       this.myCards = usercardsResponse['data']['Cards']
+      console.log(usercardsResponse)
     },
     async getCampaigns(){
       const campaignDetails = await axios.get("https://wn67is82a0.execute-api.us-east-1.amazonaws.com/1/campaigns")
-      // console.log(campaignDetails)
+      console.log(campaignDetails)
       this.campaigns = campaignDetails['data']
     }
     },
@@ -49,6 +64,7 @@ export default {
       await this.getCardTransactions()
       await this.getCards()
       await this.getCampaigns()
+      await this.getUserTransactions()
     }
 }
 
@@ -87,12 +103,12 @@ export default {
               <th scope="col">Benefit</th>
             </tr>
           </thead>
-          <TransactionTableRow v-for="transaction in transactions">
+          <TransactionTableRow v-for="transaction in transactions" excludeProcessing="{{transaction['excluded']}}">
             <template #date>{{transaction['Transaction_Date']}}</template>
             <template #description></template>
-            <template #cardType>Freedom</template>
+            <template #cardType></template>
             <template #amount>{{transaction['Currency']}} {{transaction['Amount']}}</template>
-            <template #benefit></template>
+            <template #benefit>{{transaction['Rewards']}}</template>
           </TransactionTableRow>
         </table>
       </div>

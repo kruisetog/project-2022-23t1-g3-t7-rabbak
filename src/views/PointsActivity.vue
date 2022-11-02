@@ -10,7 +10,7 @@ export default {
   data() {
     return {
       myCards: {},
-      transactions: {},
+      transactions: getUserTransactions(),
       points: 0,
       miles: 0,
       cashback: 0,
@@ -28,24 +28,6 @@ export default {
               this.getUserTransactions()
             }
         },
-      async getUserTransactions(index){
-      const transactionsResponse = await axios.get("https://wn67is82a0.execute-api.us-east-1.amazonaws.com/1/users/AA8EDA5B03B3422B819FE303E5CA0C18/transactions")
-      this.transactions = transactionsResponse['data']
-      console.log(transactionsResponse)
-      for (i = 0; i < this.transactionsResponse.length; i++) {
-        if(this.transactionsResponse[i]['Rewards'] == null){
-          this.transactionsResponse[i]['excluded'] == true
-        }
-        else{
-          this.transactionsResponse[i]['excluded'] == false
-        }
-      }
-    },
-    async getCardTransactions(index){
-      const transactionsResponse = await axios.get("https://wn67is82a0.execute-api.us-east-1.amazonaws.com/1/users/AA8EDA5B03B3422B819FE303E5CA0C18/card/" + index + "/transactions")
-      this.transactions = transactionsResponse['data']
-      console.log(transactionsResponse)
-    },
     async getCards(){
       const usercardsResponse = await axios.get("https://wn67is82a0.execute-api.us-east-1.amazonaws.com/1/users/AA8EDA5B03B3422B819FE303E5CA0C18")
       this.points = usercardsResponse['data']['Points_Total']
@@ -54,17 +36,43 @@ export default {
       this.myCards = usercardsResponse['data']['Cards']
       console.log(usercardsResponse)
     },
+    async getUserTransactions(index){
+      const transactionsResponse = await axios.get("https://wn67is82a0.execute-api.us-east-1.amazonaws.com/1/users/AA8EDA5B03B3422B819FE303E5CA0C18/transactions")
+      this.transactions = transactionsResponse['data']
+      for (i = 0; i < this.transactions.length; i++) {
+        if(this.transactions[i]['Rewards'] == null){
+          this.transactions[i]['excluded'] == true
+        }
+        else{
+          this.transactions[i]['excluded'] == false
+        }
+        this.transactions[i]['Name'] = this.getCardName(this.transactions[i]['Card_ID'])
+      }
+      console.log(this.transactions)
+    },
+    async getCardTransactions(index){
+      const transactionsResponse = await axios.get("https://wn67is82a0.execute-api.us-east-1.amazonaws.com/1/users/AA8EDA5B03B3422B819FE303E5CA0C18/card/" + index + "/transactions")
+      this.transactions = transactionsResponse['data']
+      console.log(transactionsResponse)
+    },
     async getCampaigns(){
       const campaignDetails = await axios.get("https://wn67is82a0.execute-api.us-east-1.amazonaws.com/1/campaigns")
       console.log(campaignDetails)
       this.campaigns = campaignDetails['data']
+    },
+    getCardName(card_id){
+      for (i = 0; i < this.myCards.length; i++) {
+        if(this.myCards[i]['Card_ID'] == card_id){
+          return this.myCards[i]['Name']
+        }
+      }
     }
     },
     async mounted(){
-      await this.getCardTransactions()
       await this.getCards()
       await this.getCampaigns()
       await this.getUserTransactions()
+      await this.getCardTransactions()
     }
 }
 
@@ -106,7 +114,7 @@ export default {
           <TransactionTableRow v-for="transaction in transactions" excludeProcessing="{{transaction['excluded']}}">
             <template #date>{{transaction['Transaction_Date']}}</template>
             <template #description></template>
-            <template #cardType></template>
+            <template #cardType>{{transaction['Name']}}</template>
             <template #amount>{{transaction['Currency']}} {{transaction['Amount']}}</template>
             <template #benefit>{{transaction['Rewards']}}</template>
           </TransactionTableRow>

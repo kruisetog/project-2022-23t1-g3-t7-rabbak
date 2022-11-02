@@ -53,10 +53,28 @@ export default {
     async getCardTransactions(index){
       const transactionsResponse = await axios.get("https://wn67is82a0.execute-api.us-east-1.amazonaws.com/1/users/AA8EDA5B03B3422B819FE303E5CA0C18/card/" + index + "/transactions")
       this.transactions = transactionsResponse['data']
+      for (var i = 0; i < this.transactions.length; i++) {
+        if(this.transactions[i]['Rewards'] == null){
+          this.transactions[i]['exclusion'] == true
+        }
+        else{
+          this.transactions[i]['exclusion'] == false
+        }
+        this.transactions[i]['Name'] = this.getCardName(this.transactions[i]['Card_ID'])
+      }
+      console.log(this.transactions)
+    },
       // console.log(transactionsResponse)
-      this.transactions.forEach((key, value)=>{
-        console.log(key, value)
-      })
+      // this.transactions.forEach((key)=>{
+      //   console.log("key: ", key)
+      //   if(key['Rewards'] == null){
+      //     key['excluded'] = true
+      //   }
+      //   else{
+      //     key['excluded'] = false
+      //   }
+      //   key['Name'] = this.getCardName(transaction['Card_ID'])
+      // })
       // for(transaction in this.transactions){
       //   if(transaction['Rewards'] == null){
       //     transaction['excluded'] = true
@@ -66,7 +84,7 @@ export default {
       //   }
       //   transaction['Name'] = this.getCardName(transaction['Card_ID'])
       // }
-      console.log(this.transactions)
+      // console.log('this.transactions' , this.transactions)
     },
     async getCampaigns(){
       const campaignDetails = await axios.get("https://wn67is82a0.execute-api.us-east-1.amazonaws.com/1/campaigns")

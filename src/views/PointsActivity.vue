@@ -101,7 +101,7 @@ export default {
     }
     },
     beforeMount(){
-      await this.getUserTransactions()
+      this.getUserTransactions()
     },
     async mounted(){
       await this.getCards()

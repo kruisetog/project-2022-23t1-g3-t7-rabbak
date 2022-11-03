@@ -10,7 +10,7 @@ export default {
   data() {
     return {
       myCards: {},
-      transactions: this.getUserTransactions(),
+      transactions: {},
       points: 0,
       miles: 0,
       cashback: 0,
@@ -100,14 +100,11 @@ export default {
       }
     }
     },
-    beforeMount(){
-      this.getUserTransactions()
-    },
     async mounted(){
       await this.getCards()
-      await this.getCampaigns()
       await this.getUserTransactions()
       await this.getCardTransactions()
+      await this.getCampaigns() 
     }
 }
 

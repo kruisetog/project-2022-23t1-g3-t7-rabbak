@@ -43,6 +43,7 @@ export default {
       })
     } ,close(value){
         this.showSuccess = false;
+        this.filelist = [];
       }
   },
     components:{

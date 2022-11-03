@@ -5,13 +5,13 @@ import {Amplify, Storage} from 'aws-amplify';
 
 Amplify.configure({
     Auth: {
-        identityPoolId: process.env.IDENTITYPOOLID, 
-        region: process.env.REGION,
+        identityPoolId: process.env.VUE_APP_IDENTITYPOOLID, 
+        region: process.env.VUE_APP_REGION,
     },
     Storage: {
         AWSS3: {
-            bucket: process.env.BUCKETNAME, 
-            region: process.env.REGION, 
+            bucket: process.env.VUE_APP_BUCKETNAME, 
+            region: process.env.VUE_APP_REGION, 
         }
     }
 });

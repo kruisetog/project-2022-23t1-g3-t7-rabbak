@@ -5,13 +5,13 @@ import {Amplify, Storage} from 'aws-amplify';
 
 Amplify.configure({
     Auth: {
-        identityPoolId: 'us-east-1:a914bc24-32e4-412e-89fc-e16d34322aa8', 
-        region: 'us-east-1',
+        identityPoolId: process.env.IDENTITYPOOLID, 
+        region: process.env.REGION,
     },
     Storage: {
         AWSS3: {
-            bucket: 'batchuploadbucket', 
-            region: 'us-east-1', 
+            bucket: process.env.BUCKETNAME, 
+            region: process.env.REGION, 
         }
     }
 });

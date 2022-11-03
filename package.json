@@ -19,6 +19,7 @@
   },
   "optionalDependencies": {
     "esbuild-android-arm64": "^0.15.12",
-    "fsevents": "*"
+    "fsevents": "*",
+    "dotenv": "^16.0.3"
   }
 }

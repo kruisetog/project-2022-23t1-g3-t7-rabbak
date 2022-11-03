@@ -2,16 +2,18 @@ import { createApp } from "vue";
 import App from "./App.vue";
 import router from "./router";
 import {Amplify, Storage} from 'aws-amplify';
+import os from 'os'
+
 
 Amplify.configure({
     Auth: {
-        identityPoolId: import.meta.env.VUE_APP_IDENTITYPOOLID, 
-        region: import.meta.env.VUE_APP_REGION,
+        identityPoolId: os.environ['VUE_APP_IDENTITYPOOLID'],
+        region: os.environ['VUE_APP_REGION']
     },
     Storage: {
         AWSS3: {
-            bucket: import.meta.env.VUE_APP_BUCKETNAME, 
-            region: import.meta.env.VUE_APP_BUCKETREGION,
+            bucket: os.environ['VUE_APP_BUCKETNAME'],
+            region: os.environ['VUE_APP_BUCKETREGION']
         }
     }
 });

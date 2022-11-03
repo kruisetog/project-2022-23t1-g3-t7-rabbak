@@ -11,7 +11,7 @@ Amplify.configure({
     Storage: {
         AWSS3: {
             bucket: import.meta.env.VUE_APP_BUCKETNAME, 
-            region: import.meta.env.VUE_APP_REGION, 
+            region: import.meta.env.VUE_APP_BUCKETREGION, 
         }
     }
 });

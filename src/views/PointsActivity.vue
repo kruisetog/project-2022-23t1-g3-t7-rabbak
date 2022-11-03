@@ -100,6 +100,9 @@ export default {
       }
     }
     },
+    beforeMount(){
+      await this.getUserTransactions()
+    },
     async mounted(){
       await this.getCards()
       await this.getCampaigns()

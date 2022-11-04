@@ -12,6 +12,7 @@ export default {
       filetype: ['text/csv', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,', 'application/vnd.ms-excel'],
       filelist: [],
       showSuccess: false,
+      showFile: true,
       showError: false,
       errormsge: ''
     } 
@@ -36,9 +37,9 @@ export default {
       elem.click()
     },
     upload(){
+      this.showFile = false;
       // console.log(this.filelist[0])
       if (this.filelist.length == 0){
-        this.showSuccess = true
         this.showError = true;
         this.errormsge = 'Please select a file to upload'
       }
@@ -46,14 +47,13 @@ export default {
       }).then((data)=>{
         this.showSuccess=true;
       }).catch((err)=>{
-        this.showSuccess=true;
         this.showError=true;
         this.errormsge=err;
-        alert(err)
       })
     } ,close(value){
         this.showSuccess = false;
         this.showError = false;
+        this.showFile = true;
         this.errormsge = '';
         this.filelist = [];
       }
@@ -69,7 +69,7 @@ export default {
     <div class="content">
       <h1>File Upload</h1>
       <br>
-      <div v-if="!showSuccess" class="row">
+      <div v-if="showFile" class="row">
         <div class="col-md-2"></div>
         <div class="col-md-8">
         <div class="upload-box" @dragover="dragover" @dragleave="dragleave" @drop="drop">
@@ -90,7 +90,7 @@ export default {
       <div v-if="showError">
       <SuccessTransaction @close="close" :fail=showError :error=errormsge ></SuccessTransaction>
       </div>
-      <div v-else>
+      <div v-if="showSuccess">
       <SuccessTransaction @close="close" :success=showSuccess title="file upload"></SuccessTransaction>
       </div>
 

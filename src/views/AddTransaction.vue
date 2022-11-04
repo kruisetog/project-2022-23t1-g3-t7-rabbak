@@ -1,61 +1,73 @@
 <script setup>
 import SuccessTransaction from "../components/SuccessTransaction.vue";
 import currencies from 'currencies.json';
+
+defineProps({
+      transactionDate: String,
+      mcc: String,
+      merchant: String,
+      currency: String,
+      amount: String, 
+      cardtype: String,
+      transactionDate: String,
+      cardNum: String,
+})
 </script>
 
 <script>
-export default {
+export default{
     data() {
       return{
         post:{
           showSuccess: true,
         },
-        date:"",
-        mcc: "",
-        merchant: "",
-        currency: "SGD",
-        amount:"",
-        cardtype:"scis_platinummiles",
-        transactionDate: "",
-        cardNum: "",
         showSuccess: false,
         showError: false,
         errormsge: '',
-        transaction: {},
+        // transaction: {},
         currencyCode: []
       }
     },
     methods: {
       sendTransaction(){
-      this.transaction = {
+      // this.transaction = {
+      //   'transaction_date': this.transactionDate,
+      //   'merchant': this.merchant,
+      //   'mcc': this.mcc,
+      //   'currency': this.currency,
+      //   'amount': this.amount,
+      //   'card_pan': this.cardNum,
+      //   'card_type': this.cardtype,
+      // }
+      console.log(JSON.parse(JSON.stringify({
         'transaction_date': this.transactionDate,
         'merchant': this.merchant,
         'mcc': this.mcc,
         'currency': this.currency,
+        'amount': this.amount,
         'card_pan': this.cardNum,
-        'card_type': this.cardtype
-      }
-      if(this.transactionDate.length == 0){
-        this.showSuccess = true;
-        this.errormsge = "Transaction Date is empty";
-        this.showError = true;
-      }
-      else{
-        this.showSuccess = true;
-      }
-      console.log(this.transaction)
+        'card_type': this.cardtype,
+      })))
+      // if(this.transactionDate.length == 0){
+      //   this.showSuccess = true;
+      //   this.errormsge = "Transaction Date is empty";
+      //   this.showError = true;
+      // }
+      this.showSuccess = true;
       },
       close(value){
         if(value == 'close'){
           this.showSuccess = false;
           this.showError = false;
           this.errormsge = '';
-          this.transactionDate = '';
-          this.merchant = '',
-          this.mcc = '',
-          this.currency = 'SGD',
-          this.cardNum = '',
-          this.cardType = 'scis_platinummiles'
+          // this.transaction = {}
+          // console.log(this.transaction)
+          // this.transactionDate = '';
+          // this.merchant = '',
+          // this.mcc = '',
+          // this.currency = 'SGD',
+          // this.cardNum = '',
+          // this.cardType = 'scis_platinummiles'
         }
       },
       closeError(value){
@@ -67,7 +79,7 @@ export default {
       }
     },
     computed: {
-      getCurrencyCode(){
+      getCurrencyCode(){        
       this.currencyCode = []
       for (let i = 0; i < currencies.currencies.length; i++) {
           this.currencyCode.push(currencies.currencies[i]['code']);
@@ -78,7 +90,7 @@ export default {
     components:{
       SuccessTransaction
     }
-};
+  };
 </script>
 
 <template>
@@ -160,6 +172,7 @@ export default {
   padding-right: 20px;
 } 
 
-
+ 
+ 
 </style>
  

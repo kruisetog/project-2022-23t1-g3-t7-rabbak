@@ -25,7 +25,7 @@ export default {
               this.getCardTransactions(selectedIndex)
             }
             else{
-              // this.getUserTransactions()
+              this.getUserTransactions()
             }
         },
     async getCards(){
@@ -36,29 +36,30 @@ export default {
         this.myCards = res['data']['Cards']
       })
     },
-    // async getUserTransactions(){
-    //   const transactionsResponse = await axios.get("https://wn67is82a0.execute-api.us-east-1.amazonaws.com/1/users/AA8EDA5B03B3422B819FE303E5CA0C18/transactions")
-    //   this.transactions = transactionsResponse['data']
-    //   for (i = 0; i < this.transactions.length; i++) {
-    //     if(this.transactions[i]['Rewards'] == null){
-    //       this.transactions[i]['excluded'] == true
-    //     }
-    //     else{
-    //       this.transactions[i]['excluded'] == false
-    //     }
-    //     this.transactions[i]['Name'] = this.getCardName(this.transactions[i]['Card_ID'])
-    //   }
-    //   console.log(this.transactions)
-    // },
+    async getUserTransactions(){
+      const transactionsResponse = await axios.get("https://wn67is82a0.execute-api.us-east-1.amazonaws.com/1/users/AA8EDA5B03B3422B819FE303E5CA0C18/transactions").then(res=>{
+        this.transactions = res['data']
+        for (let i = 0; i < this.transactions.length; i++) {
+          if(this.transactions[i]['Rewards'] == null){
+            this.transactions[i]['Excluded'] = true
+          }
+          else{
+            this.transactions[i]['Excluded'] = false
+          }
+          this.transactions[i]['Name'] = this.getCardName(this.transactions[i]['Card_ID'])
+        }
+        console.log(this.transactions)
+      })
+    },
     async getCardTransactions(index){
       const transactionsResponse = await axios.get("https://wn67is82a0.execute-api.us-east-1.amazonaws.com/1/users/AA8EDA5B03B3422B819FE303E5CA0C18/card/" + index + "/transactions").then(res =>{
         this.transactions = res['data']
         for (let i = 0; i < this.transactions.length; i++) {
           if(this.transactions[i]['Rewards'] == null){
-            this.transactions[i]['exclusion'] = true
+            this.transactions[i]['Excluded'] = true
           }
           else{
-            this.transactions[i]['exclusion'] = false
+            this.transactions[i]['Excluded'] = false
           }
           this.transactions[i]['Name'] = this.getCardName(this.transactions[i]['Card_ID'])
         }
@@ -101,9 +102,9 @@ export default {
     },
     async mounted(){
       await this.getCards()
-      await this.getCampaigns()
-      // await this.getUserTransactions()
+      await this.getUserTransactions()
       await this.getCardTransactions()
+      await this.getCampaigns() 
     }
 }
 
@@ -136,13 +137,13 @@ export default {
           <thead>
             <tr>
               <th scope="col">Date</th>
-              <th scope="col">Description</th>
+              <th scope="col">Merchant</th>
               <th scope="col">Card Type</th>
               <th scope="col">Amount</th>
-              <th scope="col">Benefit</th>
+              <th scope="col">Rewards</th>
             </tr>
           </thead>
-          <TransactionTableRow v-for="transaction in transactions" excludeProcessing="{{transaction['excluded']}}">
+          <TransactionTableRow v-for="transaction in transactions" excludeProcessing="{{transaction['Excluded']}}">
             <template #date>{{transaction['Transaction_Date']}}</template>
             <template #description></template>
             <template #cardType>{{transaction['Name']}}</template>

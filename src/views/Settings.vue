@@ -13,7 +13,10 @@ export default {
             showDialog: false,
             showDeleted:false,
             otpEmpty:false,
-            phoneNumber: "xxxx1234"
+            phoneNumber: "xxxx1234",
+            timerEnabled: true,
+            timerCount: 5,
+            timerShow: true
         };
     },
     methods: {
@@ -36,13 +39,41 @@ export default {
         logout(value){
           console.log(value)
           this.$router.push({ name: 'logOut', params: { logout: value } })
+        },
+        resend(){
+          console.log('resend')
+          this.timerCount = 5
+          this.timerEnabled(5)
         }
-    }
-    // , computed:{
-    //   getOTP(){
-    //     return this.otp
-    //   }
-    // }
+    },
+    watch: {
+      timerEnabled(value) {
+          if (value) {
+              setTimeout(() => {
+                  this.timerCount--;
+              }, 1000);
+          }
+      },
+      timerCount: {
+          handler(value) {
+              if (value > 0 && this.timerEnabled) {
+                  this.otpMessage = ""
+                  this.otpEmpty = false
+                  this.timerShow = true
+                  setTimeout(() => {
+                      this.timerCount--;
+                  }, 1000);
+              }
+              if(value <= 0){
+                this.otpMessage = "OTP Expired"
+                this.otpEmpty = true
+                this.timerShow = false
+              }
+
+          },
+          immediate: true // This ensures the watcher is triggered upon creation
+      },
+      }
 };
 </script>
 
@@ -62,8 +93,6 @@ export default {
         <a href="#"><button class="btn btn-danger" @click="toggleModal" type="button">DELETE MY ACCOUNT</button></a>
     </div>
     </div>
-    <hr>
-    <LogOut @logout="logout"></LogOut>
    
    <div v-show="showDialog">
     <div class="modal show" style="display:block;">
@@ -76,9 +105,11 @@ export default {
           <img class="img-fluid mx-auto d-block" src="../assets/exclamation-mark.png"/><br>
           <p>This action cannot be undone. We have sent an OTP to <strong>{{phoneNumber}}</strong> 
           Enter OTP in the box below to delete your account.</p>
+          <p v-show="timerShow">OTP expiring in {{timerCount}}</p>
           <input type="number" v-model="otp" name ='otp'  class="form-control" id="otp" placeholder="Enter OTP">
-          <a id="resend" class="float-right" href="#">Resend OTP</a>
+          <a id="resend" class="float-right" @click="resend">Resend OTP</a>
           <p class="otpEmpty float-left" v-if="otpEmpty" href="#">{{ otpMessage }}</p>
+          
         </div>
         <div class="modal-footer">
         <button class="btn btn-secondary" type="button"
@@ -113,9 +144,6 @@ export default {
       </div>
     </div>
   </div>
-  
- 
-    
 </div>
    
 
@@ -146,7 +174,10 @@ img{
 .modal-title{
     text-align:center;
 }
- 
+
+a:hover{
+  cursor: pointer;
+}
  
 </style>
  

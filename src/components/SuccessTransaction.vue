@@ -2,7 +2,19 @@
 defineProps({
     title: {
         type: String,
-        required: true
+        required: false
+    },
+    success:{
+        type:Boolean,
+        required: false
+    },
+    fail:{
+        type:Boolean,
+        required: false
+    },
+    error:{
+        type:String,
+        required:false
     }
 })
 </script>
@@ -25,10 +37,16 @@ export default {
 
 <template>
     <div v-show="show" class="row successRow">
-        <div class="col-12 text-center">
-            <img class="img-fluid mx-auto d-block" src="../assets/tick.png"/><br>
-            <h4 class="text-capitalize text-center">{{title}}</h4>
+        <div v-if="success" class="col-12 text-center">
+            <img class="img-fluid mx-auto d-block"  src="../assets/tick.png"/>
+            <br>
             <h6 class="text-capitalize text-center">{{title}} Success</h6>
+            <button type="button" @click="close" class="btn btn-primary w-50">OK</button>
+        </div>
+        <div v-if="fail" class="col-12 text-center">
+            <img class="img-fluid mx-auto d-block"  src="../assets/exclamation-mark.png"/>
+            <br>
+            <h6 class="text-capitalize text-center">{{error}}</h6>
             <button type="button" @click="close" class="btn btn-primary w-50">OK</button>
         </div>
     </div>

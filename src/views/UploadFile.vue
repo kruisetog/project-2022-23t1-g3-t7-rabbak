@@ -11,7 +11,9 @@ export default {
     return { 
       filetype: ['text/csv', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,', 'application/vnd.ms-excel'],
       filelist: [],
-      showSuccess: false
+      showSuccess: false,
+      showError: false,
+      errormsge: ''
     } 
   },
   methods: {
@@ -35,14 +37,24 @@ export default {
     },
     upload(){
       // console.log(this.filelist[0])
+      if (this.filelist.length == 0){
+        this.showSuccess = true
+        this.showError = true;
+        this.errormsge = 'Please select a file to upload'
+      }
       Storage.put(this.filelist[0].name, this.filelist[0], {
       }).then((data)=>{
         this.showSuccess=true;
       }).catch((err)=>{
+        this.showSuccess=true;
+        this.showError=true;
+        this.errormsge=err;
         alert(err)
       })
     } ,close(value){
         this.showSuccess = false;
+        this.showError = false;
+        this.errormsge = '';
         this.filelist = [];
       }
   },
@@ -75,8 +87,11 @@ export default {
         </div>
       </div>
       
-      <div v-if="showSuccess">
-      <SuccessTransaction @close="close" title="file upload"></SuccessTransaction>
+      <div v-if="showError">
+      <SuccessTransaction @close="close" :fail=showError :error=errormsge ></SuccessTransaction>
+      </div>
+      <div v-else>
+      <SuccessTransaction @close="close" :success=showSuccess title="file upload"></SuccessTransaction>
       </div>
 
     </div>

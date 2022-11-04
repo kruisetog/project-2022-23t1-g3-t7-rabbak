@@ -137,10 +137,10 @@ export default {
           <thead>
             <tr>
               <th scope="col">Date</th>
-              <th scope="col">Description</th>
+              <th scope="col">Merchant</th>
               <th scope="col">Card Type</th>
               <th scope="col">Amount</th>
-              <th scope="col">Benefit</th>
+              <th scope="col">Rewards</th>
             </tr>
           </thead>
           <TransactionTableRow v-for="transaction in transactions" excludeProcessing="{{transaction['Excluded']}}">

@@ -1,5 +1,6 @@
 <script setup>
 import SuccessTransaction from "../components/SuccessTransaction.vue";
+import currencies from 'currencies.json';
 </script>
 
 <script>
@@ -7,28 +8,73 @@ export default {
     data() {
       return{
         post:{
-          showSuccess: true
+          showSuccess: true,
         },
         date:"",
         mcc: "",
-        currency: "1",
+        merchant: "",
+        currency: "SGD",
         amount:"",
-        cardtype:"1",
+        cardtype:"scis_platinummiles",
         transactionDate: "",
         cardNum: "",
-        showSuccess: false
+        showSuccess: false,
+        showError: false,
+        errormsge: '',
+        transaction: {},
+        currencyCode: []
       }
     },
     methods: {
       sendTransaction(){
-        this.showSuccess=true;
+      this.transaction = {
+        'transaction_date': this.transactionDate,
+        'merchant': this.merchant,
+        'mcc': this.mcc,
+        'currency': this.currency,
+        'card_pan': this.cardNum,
+        'card_type': this.cardtype
+      }
+      if(this.transactionDate.length == 0){
+        this.showSuccess = true;
+        this.errormsge = "Transaction Date is empty";
+        this.showError = true;
+      }
+      else{
+        this.showSuccess = true;
+      }
+      console.log(this.transaction)
       },
       close(value){
         if(value == 'close'){
           this.showSuccess = false;
+          this.showError = false;
+          this.errormsge = '';
+          this.transactionDate = '';
+          this.merchant = '',
+          this.mcc = '',
+          this.currency = 'SGD',
+          this.cardNum = '',
+          this.cardType = 'scis_platinummiles'
+        }
+      },
+      closeError(value){
+        if(value == 'close'){
+          this.showSuccess = false;
+          this.showError = false;
+          this.errormsge = '';
         }
       }
     },
+    computed: {
+      getCurrencyCode(){
+      this.currencyCode = []
+      for (let i = 0; i < currencies.currencies.length; i++) {
+          this.currencyCode.push(currencies.currencies[i]['code']);
+        }
+       return this.currencyCode
+    }
+},
     components:{
       SuccessTransaction
     }
@@ -43,10 +89,15 @@ export default {
         <br>
       <div v-if="!showSuccess">
       <div class="row">
-        <div class="col-md-6 form-group">
+        <div class="col-md-12 form-group">
           <label for="transactionDate">Transaction date</label>
                 <input type="date" v-model="transactionDate" class="form-control" 
                 name="transactionDate" placeholder="Username">
+          </div>
+          <div class="col-md-6 form-group">
+          <label for="merchant">Merchant</label>
+                <input type="text" v-model="merchant" class="form-control" 
+                name="merchant" placeholder="Enter Merchant">
           </div>
           <div class="col-md-6 form-group">
           <label for="mcc">MCC</label>
@@ -58,11 +109,7 @@ export default {
         <div class="col-md-6 form-group">
           <label for="currency">Currency</label>
           <select class="form-control" v-model="currency" id="currency">
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-                <option value="5">5</option>
+                <option v-for="code in getCurrencyCode" :value="code">{{code}}</option>
           </select>
           </div>
           <div class="col-md-6 form-group">
@@ -75,11 +122,10 @@ export default {
         <div class="col-md-6 form-group">
           <label for="cardtype">Card Type</label>
           <select class="form-control" v-model="cardtype" id="cardtype">
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-                <option value="5">5</option>
+                <option value="scis_platinummiles">scis_platinummiles</option>
+                <option value="scis_shopping">scis_shopping</option>
+                <option value="scis_freedom">scis_freedom</option>
+                <option value="scis_premiummiles">scis_premiummiles</option>
           </select>
           </div>
           <div class="col-md-6 form-group">
@@ -94,10 +140,13 @@ export default {
         </div>
       </div> 
     </div>
-    
-      <div v-if="showSuccess">
-      <SuccessTransaction @close="close" title="transaction added"></SuccessTransaction>
-      </div>
+
+    <div v-if="showError">
+      <SuccessTransaction @close="closeError" :fail="showError" :error=errormsge ></SuccessTransaction>
+    </div>
+    <div v-else>
+    <SuccessTransaction @close="close" :success=showSuccess title="transaction added"></SuccessTransaction>
+    </div>
 
     </div> 
   </div>   
@@ -111,7 +160,6 @@ export default {
   padding-right: 20px;
 } 
 
- 
- 
+
 </style>
  

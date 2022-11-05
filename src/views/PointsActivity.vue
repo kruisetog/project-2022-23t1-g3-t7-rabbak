@@ -14,7 +14,8 @@ export default {
       points: 0,
       miles: 0,
       cashback: 0,
-      campaigns: {}
+      campaigns: {},
+      userID: "",
     }
   },
   methods: {

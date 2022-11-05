@@ -17,7 +17,8 @@ export default {
             phoneNumber: "xxxx1234",
             timerEnabled: true,
             timerCount: 5,
-            timerShow: true
+            timerShow: true,
+            userID: 'f59d5e63-76e2-4a8a-a117-5d216d7ace89',
         };
     },
     methods: {
@@ -36,9 +37,10 @@ export default {
           this.showDialog = true
         },
         async getOTP(){
-          const otpResponse = await axios.get("https://wn67is82a0.execute-api.us-east-1.amazonaws.com/1/users/b2e42eae-b83a-42dc-952c-5ea71cc5f0d9/code").then(res =>{
+          const otpResponse = await axios.get("https://wn67is82a0.execute-api.us-east-1.amazonaws.com/1/users/" + this.userID + "/code").then(res =>{
             console.log(res)
           })
+          console.log(otpResponse)
         },
         close(){
             this.showDialog = false

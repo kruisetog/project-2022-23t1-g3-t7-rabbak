@@ -32,43 +32,43 @@ export default {
             }
         },
     async getCards(){
-      // const usercardsResponse = await axios.get("https://wn67is82a0.execute-api.us-east-1.amazonaws.com/1/users/AA8EDA5B03B3422B819FE303E5CA0C18").then(res =>{
-      //   this.points = res['data']['Points_Total']
-      //   this.miles = res['data']['Miles_Total']
-      //   this.cashback = res['data']['Cashback_Total']
-      //   this.myCards = res['data']['Cards']
-      // })
+      const usercardsResponse = await axios.get("https://wn67is82a0.execute-api.us-east-1.amazonaws.com/1/users/AA8EDA5B03B3422B819FE303E5CA0C18").then(res =>{
+        this.points = res['data']['Points_Total']
+        this.miles = res['data']['Miles_Total']
+        this.cashback = res['data']['Cashback_Total']
+        this.myCards = res['data']['Cards']
+      })
     },
     async getUserTransactions(){
-      // const transactionsResponse = await axios.get("https://wn67is82a0.execute-api.us-east-1.amazonaws.com/1/users/AA8EDA5B03B3422B819FE303E5CA0C18/transactions").then(res=>{
-      //   this.transactions = res['data']
-      //   for (let i = 0; i < this.transactions.length; i++) {
-      //     if(this.transactions[i]['Rewards'] == null){
-      //       this.transactions[i]['Excluded'] = true
-      //     }
-      //     else{
-      //       this.transactions[i]['Excluded'] = false
-      //     }
-      //     this.transactions[i]['Name'] = this.getCardName(this.transactions[i]['Card_ID'])
-      //   }
-      //   console.log(this.transactions)
-      //   this.showPage = true
-      // })
+      const transactionsResponse = await axios.get("https://wn67is82a0.execute-api.us-east-1.amazonaws.com/1/users/AA8EDA5B03B3422B819FE303E5CA0C18/transactions").then(res=>{
+        this.transactions = res['data']
+        for (let i = 0; i < this.transactions.length; i++) {
+          if(this.transactions[i]['Rewards'] == null){
+            this.transactions[i]['Excluded'] = true
+          }
+          else{
+            this.transactions[i]['Excluded'] = false
+          }
+          this.transactions[i]['Name'] = this.getCardName(this.transactions[i]['Card_ID'])
+        }
+        console.log(this.transactions)
+        this.showPage = true
+      })
     },
     async getCardTransactions(index){
-      // const transactionsResponse = await axios.get("https://wn67is82a0.execute-api.us-east-1.amazonaws.com/1/users/AA8EDA5B03B3422B819FE303E5CA0C18/card/" + index + "/transactions").then(res =>{
-      //   this.transactions = res['data']
-      //   for (let i = 0; i < this.transactions.length; i++) {
-      //     if(this.transactions[i]['Rewards'] == null){
-      //       this.transactions[i]['Excluded'] = true
-      //     }
-      //     else{
-      //       this.transactions[i]['Excluded'] = false
-      //     }
-      //     this.transactions[i]['Name'] = this.getCardName(this.transactions[i]['Card_ID'])
-      //   }
-      //   console.log(this.transactions)
-      // })
+      const transactionsResponse = await axios.get("https://wn67is82a0.execute-api.us-east-1.amazonaws.com/1/users/AA8EDA5B03B3422B819FE303E5CA0C18/card/" + index + "/transactions").then(res =>{
+        this.transactions = res['data']
+        for (let i = 0; i < this.transactions.length; i++) {
+          if(this.transactions[i]['Rewards'] == null){
+            this.transactions[i]['Excluded'] = true
+          }
+          else{
+            this.transactions[i]['Excluded'] = false
+          }
+          this.transactions[i]['Name'] = this.getCardName(this.transactions[i]['Card_ID'])
+        }
+        console.log(this.transactions)
+      })
     },
       // console.log(transactionsResponse)
       // this.transactions.forEach((key)=>{
@@ -92,9 +92,9 @@ export default {
       // }
       // console.log('this.transactions' , this.transactions)
     async getCampaigns(){
-      // const campaignDetails = await axios.get("https://wn67is82a0.execute-api.us-east-1.amazonaws.com/1/campaigns").then(res =>{
-      //   this.campaigns = res['data']
-      // })
+      const campaignDetails = await axios.get("https://wn67is82a0.execute-api.us-east-1.amazonaws.com/1/campaigns").then(res =>{
+        this.campaigns = res['data']
+      })
     },
     getCardName(card_id){
       for (let i = 0; i < this.myCards.length; i++) {

@@ -2,7 +2,7 @@ import { createApp } from "vue";
 import App from "./App.vue";
 import router from "./router";
 import {Amplify, Storage} from 'aws-amplify';
-
+import VueAwesomePaginate from "vue-awesome-paginate";
 
 Amplify.configure({
     Auth: {
@@ -20,5 +20,6 @@ Amplify.configure({
 const app = createApp(App);
 
 app.use(router);
+app.use(VueAwesomePaginate);
 
 app.mount("#app");

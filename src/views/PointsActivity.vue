@@ -16,6 +16,8 @@ export default {
       cashback: 0,
       campaigns: {},
       userID: "",
+      currentPage: 1,
+      itemsPerPage: 10,
     }
   },
   methods: {
@@ -99,7 +101,20 @@ export default {
           return this.myCards[i]['Name']
         }
       }
+    },
+    onClickHandler(pageNumber) {
+      if (pageNumber) {
+        this.currentPage = pageNumber;
+      }
+      console.log(pageNumber);
     }
+    },
+    computed:{
+      recordsShown: function () {
+      // const startIndex = this.itemsPerPage * (this.currentPage - 1);
+      // const endIndex = this.itemsPerPage * this.currentPage;
+      // return this.records.slice(startIndex, endIndex);
+      },
     },
     async mounted(){
       await this.getCards()
@@ -130,11 +145,12 @@ export default {
           <br>
         </template>
       </div>
-       
-      <div class="col-lg-7 my-transactions">
-        <br><br>
-        <h5>My Transactions</h5>
-        <table class="table">
+      
+      <div class="d-flex" style="width: 100%; flex-wrap: wrap">
+        <div class="col my-transactions">
+          <br /><br />
+          <h5>My Transactions</h5>
+          <table class="table" style="table-layout: fixed">
           <thead>
             <tr>
               <th scope="col">Date</th>
@@ -151,10 +167,18 @@ export default {
             <template #amount>{{transaction['Currency']}} {{transaction['Amount']}}</template>
             <template #benefit>{{transaction['Rewards']}}</template>
           </TransactionTableRow>
+
+          <vue-awesome-paginate
+              :items-per-page="itemsPerPage"
+              v-model="currentPage"
+              :on-click="onClickHandler"
+            />
+
         </table>
       </div>
     
-      <div class="col-lg-5">
+    
+      <div class="col-lg-4">
         <br><br>
         <h5>Ongoing Campaigns</h5>
         <CampaignBlock v-for="campaign in campaigns">
@@ -163,9 +187,8 @@ export default {
           <template #endDate>{{campaign['End_Date']}}</template>
         </CampaignBlock>
       </div>
-
     </div>
-
+  </div>
   </main>
 </template>
 
@@ -181,6 +204,43 @@ export default {
   padding-right: 20px;
   display: flex;
 } 
+</style>
+
+<style>
+table td {
+  max-width: 0;
+}
+tr td:first-child {
+  width: 1%;
+  white-space: nowrap;
+}
+.pagination-container {
+  display: flex;
+  margin-top: 20px;
+  list-style: none;
+  column-gap: 10px;
+  padding-left: 0;
+}
+.paginate-buttons {
+  height: 40px;
+  width: 40px;
+  border-radius: 20px;
+  cursor: pointer;
+  background-color: rgb(242, 242, 242);
+  border: 1px solid rgb(217, 217, 217);
+  color: black;
+}
+.paginate-buttons:hover {
+  background-color: #d8d8d8;
+}
+.active-page {
+  background-color: #3498db;
+  border: 1px solid #3498db;
+  color: white;
+}
+.active-page:hover {
+  background-color: #2988c8;
+}
 </style>
 
 

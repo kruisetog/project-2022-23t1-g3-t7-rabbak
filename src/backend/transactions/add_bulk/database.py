@@ -3,19 +3,18 @@ import enum
 import uuid
 
 # from pgsql.database import SessionLocal
-from sqlalchemy import create_engine, ForeignKey, BIGINT, TypeDecorator, CHAR, Enum, inspect
+from sqlalchemy import create_engine, ForeignKey, BIGINT, TypeDecorator, CHAR, Enum, Float
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import sessionmaker, relationship
 from sqlalchemy.ext.declarative import declarative_base
 from datetime import datetime
-from sqlalchemy import Column, String, DateTime, Float, Integer, Boolean
-import json
+from sqlalchemy import Column, String, DateTime, Integer, Boolean
 
 from src.backend.Secret import pw, pw_dev
 
 # connection
+# DATABASE_URL = "mysql+pymysql://admin:" + pw + "@database-1-instance-1.cqbbxkouucyk.us-east-1.rds.amazonaws.com:3306/cs301_scis_bank"
 DATABASE_URL = "mysql+pymysql://root:" + pw_dev + "@localhost:3306/dev"
-# "mysql+pymysql://admin:"+pw+"@database-1-instance-1.cqbbxkouucyk.us-east-1.rds.amazonaws.com:3306/cs301_scis_bank"
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
@@ -78,76 +77,135 @@ class RewardType(enum.Enum):
     Cashback = 3
 
 
-class UserCard(Base):
-    """
-    Our user table storing the users and their cards
-    """
-    __tablename__ = 'usercard'
-    card_id = Column(GUID, primary_key=True)
-    user_id = Column(GUID, nullable=False)
-    card_pan = Column(String(16), nullable=False)
-    card_type = Column(Enum(CardType), nullable=False)
-
-    def as_dict(self):
-        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+class EarnType(enum.Enum):
+    BER = 1
+    AC = 2
+    CPM = 3
 
 
+#####################################################################
 class Decorator(Base):
     """
     A special table storing the special 'decorator' attributes of a Transaction and Exclusion
     """
     __tablename__ = 'decorator'
-    id = Column(Integer, primary_key=True)
+    decorator_id = Column(Integer, primary_key=True)
     total_active = Column(Integer)
-    is_foreign = Column(Boolean)
-    is_online = Column(Boolean)
-    transaction = relationship("Transaction")
-    rewardsprogram = relationship("RewardsProgram")
+    is_foreign = Column(Boolean, default=0)
+    is_online = Column(Boolean, default=0)
+    is_hotel = Column(Boolean, default=0)
+    transaction = relationship("UnprocessedTransactions", cascade="all, delete")
+    rewardsprogram = relationship("RewardsProgram", cascade="all, delete")
 
     def as_dict(self):
         return {c.name: getattr(self, c.name) for c in self.__table__.columns}
 
 
-class Transaction(Base):
+class User(Base):
+    __tablename__ = 'user'
+    __table_args__ = {'extend_existing': True}
+    user_id = Column(GUID, primary_key=True)
+    total_points = Column(Integer, nullable=False, default=0)
+    total_miles = Column(Integer, nullable=False, default=0)
+    total_cashback = Column(Integer, nullable=False, default=0)
+    email = Column(String(255), nullable=False)
+    usercard = relationship("UserCard", cascade="all, delete")
+
+
+class UserCard(Base):
+    """
+    Our user table storing the users and their cards
+    """
+    __tablename__ = 'usercard'
+    __table_args__ = {'extend_existing': True}
+    card_pan_hash = Column(String(255), primary_key=True)
+    card_pan_last = Column(Integer, nullable=False)
+    card_type = Column(Enum(CardType), nullable=False)
+    user_id = Column(GUID, ForeignKey("user.user_id"))
+
+    def as_dict(self):
+        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+
+
+class UnprocessedTransactions(Base):
     """
     Transactions received from user and processed before storing.
     """
-    __tablename__ = 'transaction'
-    id = Column(GUID, primary_key=True)
-    transaction_id = Column(String(255), nullable=False)
-    card_pan = Column(String(16), nullable=False)
+    __tablename__ = 'unprocessedtransaction'
+    __table_args__ = {'extend_existing': True}
+    transaction_id = Column(GUID, primary_key=True)
     merchant = Column(String(255), nullable=False)
     mcc = Column(Integer, nullable=True)
-    currency = Column(String(3), nullable=False)
-    amount = Column(BIGINT, nullable=False)
+    amount = Column(Float, nullable=False)
     transaction_date: datetime = Column(DateTime, nullable=False)
     # Optional fields. If supplied we will validate regardless
-    card_id = Column(GUID)
     card_type = Column(Enum(CardType))
     # Internal fields. We add them on our own
     user_id = Column(GUID)
-    decorator_id = Column(Integer, ForeignKey("decorator.id"))
+    decorator_id = Column(Integer, ForeignKey("decorator.decorator_id"))
 
     def as_dict(self):
         return {c.name: getattr(self, c.name) for c in self.__table__.columns}
 
 
+class Exclusions(Base):
+    """
+    MCC (from rewards)
+    """
+    __tablename__ = 'exclusions'
+    __table_args__ = {'extend_existing': True}
+    mcc = Column(Integer, primary_key=True)
+    reward_type = Column(Enum(RewardType), primary_key=True)
+
+
 class RewardsProgram(Base):
+    """
+    Base Earn rate	                       Applicable Categories
+    1 point/SGD on spend*
+    4 points/SGD on all shopping spend	    10 points/SGD on all online spend
+    """
     __tablename__ = 'rewardsprogram'
-    id = Column(GUID, primary_key=True)
+    __table_args__ = {'extend_existing': True}
+    rewards_program_id = Column(GUID, primary_key=True)
     card_type = Column(Enum(CardType), nullable=False)
-    decorator_id = Column(Integer, ForeignKey("decorator.id"), nullable=False)
-    Reward_Type = Column(Enum(RewardType), nullable=False)
-    reward = Column(BIGINT, nullable=False)
+    reward_type = Column(Enum(RewardType), nullable=False)
+    earn_type = Column(Enum(EarnType), nullable=False)
+    amount = Column(BIGINT, nullable=False)
     min_spend = Column(BIGINT, nullable=False)
     is_stackable = Column(Boolean, nullable=False)
+    campaign = relationship("Campaign", cascade="all, delete")
+    decorator_id = Column(Integer, ForeignKey("decorator.decorator_id"), nullable=False)
+
+
+class Campaign(Base):
+    """
+    4 miles per dollar with Grab, min spend 100 SGD
+    """
+    __tablename__ = 'campaign'
+    __table_args__ = {'extend_existing': True}
     merchant = Column(String(255))
+    start_date = Column(DateTime, nullable=False)
+    end_date = Column(DateTime, nullable=False)
+    description = Column(String(255))
+    rewards_program_id = Column(GUID, ForeignKey("rewardsprogram.rewards_program_id"), primary_key=True)
 
 
-class Exclusions(Base):
-    __tablename__ = 'exclusions'
-    mcc = Column(Integer, primary_key=True)
-    percentage = Column(Integer, nullable=False)
+class ProcessedTransactions(Base):
+    """
+    Transactions to process to give out rewards
+    """
+    __tablename__ = 'processedtransaction'
+    __table_args__ = {'extend_existing': True}
+    transaction_id = Column(GUID, primary_key=True)
+    merchant = Column(String(255), nullable=False)
+    amount = Column(Float, nullable=False)
+    transaction_date = Column(DateTime, nullable=False)
+    card_type = Column(Enum(CardType))
+    rewards = Column(Integer)
+    user_id = Column(GUID)
+
+    def as_dict(self):
+        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
 
 
 Base.metadata.create_all(engine)

@@ -18,6 +18,7 @@ export default {
       userID: "",
       currentPage: 1,
       itemsPerPage: 10,
+      showPage: true
     }
   },
   methods: {
@@ -111,9 +112,9 @@ export default {
     },
     computed:{
       recordsShown: function () {
-      // const startIndex = this.itemsPerPage * (this.currentPage - 1);
-      // const endIndex = this.itemsPerPage * this.currentPage;
-      // return this.records.slice(startIndex, endIndex);
+      const startIndex = this.itemsPerPage * (this.currentPage - 1);
+      const endIndex = this.itemsPerPage * this.currentPage;
+      return this.records.slice(startIndex, endIndex);
       },
     },
     async mounted(){
@@ -146,11 +147,10 @@ export default {
         </template>
       </div>
       
-      <div class="d-flex" style="width: 100%; flex-wrap: wrap">
-        <div class="col my-transactions">
+        <div class="col-lg-7 my-transactions">
           <br /><br />
           <h5>My Transactions</h5>
-          <table class="table" style="table-layout: fixed">
+          <table class="table">
           <thead>
             <tr>
               <th scope="col">Date</th>
@@ -167,16 +167,12 @@ export default {
             <template #amount>{{transaction['Currency']}} {{transaction['Amount']}}</template>
             <template #benefit>{{transaction['Rewards']}}</template>
           </TransactionTableRow>
-
-          <vue-awesome-paginate
+        </table>
+        <vue-awesome-paginate
               :items-per-page="itemsPerPage"
               v-model="currentPage"
-              :on-click="onClickHandler"
-            />
-
-        </table>
+              :on-click="onClickHandler"/>
       </div>
-    
     
       <div class="col-lg-4">
         <br><br>
@@ -188,7 +184,6 @@ export default {
         </CampaignBlock>
       </div>
     </div>
-  </div>
   </main>
 </template>
 
@@ -207,13 +202,13 @@ export default {
 </style>
 
 <style>
-table td {
+/* table td {
   max-width: 0;
 }
 tr td:first-child {
   width: 1%;
   white-space: nowrap;
-}
+} */
 .pagination-container {
   display: flex;
   margin-top: 20px;

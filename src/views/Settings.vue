@@ -1,5 +1,6 @@
 <script setup>
 import LogOut from "../components/LogOut.vue";
+import axios from "axios";
 </script>
 
 <script>
@@ -31,7 +32,13 @@ export default {
             }  
         },
         toggleModal() {
-            this.showDialog = true
+          this.getOTP()
+          this.showDialog = true
+        },
+        async getOTP(){
+          const otpResponse = await axios.get("https://wn67is82a0.execute-api.us-east-1.amazonaws.com/1/users/b2e42eae-b83a-42dc-952c-5ea71cc5f0d9/code").then(res =>{
+            console.log(res)
+          })
         },
         close(){
             this.showDialog = false

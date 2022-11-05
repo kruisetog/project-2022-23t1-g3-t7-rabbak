@@ -15,114 +15,106 @@ export default {
       miles: 0,
       cashback: 0,
       campaigns: {},
-      userID: "",
       currentPage: 1,
-      itemsPerPage: 10,
+      mycardsModel: 'all',
+      showPage: false
     }
   },
   methods: {
     cardSelected: function(e) {
             const selectedIndex = e.target.value;
-            // console.log(selectedIndex)
-            if(parseInt(selectedIndex) == selectedIndex){
+            console.log(selectedIndex)
+            if(selectedIndex != this.mycardsModel){
               this.getCardTransactions(selectedIndex)
+              this.getCardCampaigns(selectedIndex)
             }
             else{
               this.getUserTransactions()
+              this.getCampaigns()
             }
         },
     async getCards(){
-      const usercardsResponse = await axios.get("https://wn67is82a0.execute-api.us-east-1.amazonaws.com/1/users/AA8EDA5B03B3422B819FE303E5CA0C18").then(res =>{
-        this.points = res['data']['Points_Total']
-        this.miles = res['data']['Miles_Total']
-        this.cashback = res['data']['Cashback_Total']
+      const usercardsResponse = await axios.get("https://wn67is82a0.execute-api.us-east-1.amazonaws.com/1/users/" + this.userID).then(res =>{
+        this.points = res['data']['total_points']
+        this.miles = res['data']['total_miles']
+        this.cashback = res['data']['total_cashback']
         this.myCards = res['data']['Cards']
       })
     },
     async getUserTransactions(){
-      const transactionsResponse = await axios.get("https://wn67is82a0.execute-api.us-east-1.amazonaws.com/1/users/AA8EDA5B03B3422B819FE303E5CA0C18/transactions").then(res=>{
+      const transactionsResponse = await axios.post("https://wn67is82a0.execute-api.us-east-1.amazonaws.com/1/users/" + this.userID + "/transactions?page=" + this.currentPage).then(res=>{
         this.transactions = res['data']
+        console.log(res['data'])
         for (let i = 0; i < this.transactions.length; i++) {
-          if(this.transactions[i]['Rewards'] == null){
+          console.log(String(this.transactions[i]['rewards']).length)
+          if(String(this.transactions[i]['rewards']).length == 0){
             this.transactions[i]['Excluded'] = true
           }
           else{
             this.transactions[i]['Excluded'] = false
           }
-          this.transactions[i]['Name'] = this.getCardName(this.transactions[i]['Card_ID'])
         }
         console.log(this.transactions)
-        this.showPage = true
       })
     },
     async getCardTransactions(index){
-      const transactionsResponse = await axios.get("https://wn67is82a0.execute-api.us-east-1.amazonaws.com/1/users/AA8EDA5B03B3422B819FE303E5CA0C18/card/" + index + "/transactions").then(res =>{
+        const transactionsResponse = await axios.get("https://wn67is82a0.execute-api.us-east-1.amazonaws.com/1/users/" + this.userID + "/card/" + index + "/transactions?page=" + this.currentPage).then(res =>{
         this.transactions = res['data']
         for (let i = 0; i < this.transactions.length; i++) {
-          if(this.transactions[i]['Rewards'] == null){
+          if(this.transactions[i]['rewards'] == null){
             this.transactions[i]['Excluded'] = true
           }
           else{
             this.transactions[i]['Excluded'] = false
           }
-          this.transactions[i]['Name'] = this.getCardName(this.transactions[i]['Card_ID'])
-        }
+        };
         console.log(this.transactions)
       })
     },
-      // console.log(transactionsResponse)
-      // this.transactions.forEach((key)=>{
-      //   console.log("key: ", key)
-      //   if(key['Rewards'] == null){
-      //     key['excluded'] = true
-      //   }
-      //   else{
-      //     key['excluded'] = false
-      //   }
-      //   key['Name'] = this.getCardName(transaction['Card_ID'])
-      // })
-      // for(transaction in this.transactions){
-      //   if(transaction['Rewards'] == null){
-      //     transaction['excluded'] = true
-      //   }
-      //   else{
-      //     transaction['excluded'] = false
-      //   }
-      //   transaction['Name'] = this.getCardName(transaction['Card_ID'])
-      // }
-      // console.log('this.transactions' , this.transactions)
     async getCampaigns(){
       const campaignDetails = await axios.get("https://wn67is82a0.execute-api.us-east-1.amazonaws.com/1/campaigns").then(res =>{
         this.campaigns = res['data']
+        console.log(this.campaigns)
+        for (let i = 0; i < this.campaigns.length; i++) {
+          let startDateSplit = this.campaigns[i]['start_date'].split(" ")
+          let endDateSplit = this.campaigns[i]['end_date'].split(" ")
+          this.campaigns[i]['start_date'] = startDateSplit[0]
+          this.campaigns[i]['end_date'] = endDateSplit[0]
+        }
       })
     },
-    getCardName(card_id){
-      for (let i = 0; i < this.myCards.length; i++) {
-        if(this.myCards[i]['Card_ID'] == card_id){
-          return this.myCards[i]['Name']
+    async getCardCampaigns(index){
+        const CampaignCardResponse = await axios.get("https://wn67is82a0.execute-api.us-east-1.amazonaws.com/1/cards/" + index + "/campaign").then(res =>{
+        this.campaigns = res['data']
+        console.log(this.campaigns)
+        for (let i = 0; i < this.campaigns.length; i++) {
+          let startDateSplit = this.campaigns[i]['start_date'].split(" ")
+          let endDateSplit = this.campaigns[i]['end_date'].split(" ")
+          this.campaigns[i]['start_date'] = startDateSplit[0]
+          this.campaigns[i]['end_date'] = endDateSplit[0]
         }
-      }
+      })
     },
     onClickHandler(pageNumber) {
       if (pageNumber) {
         this.currentPage = pageNumber;
+        this.getUserTransactions()
       }
       console.log(pageNumber);
     }
     },
-    computed:{
-      recordsShown: function () {
-      const startIndex = this.itemsPerPage * (this.currentPage - 1);
-      const endIndex = this.itemsPerPage * this.currentPage;
-      return this.records.slice(startIndex, endIndex);
-      },
-    },
+    // computed:{
+    //   recordsShown: function () {
+    //   const startIndex = this.itemsPerPage * (this.currentPage - 1);
+    //   const endIndex = this.itemsPerPage * this.currentPage;
+    //   return this.records.slice(startIndex, endIndex);
+    //   },
+    // },
     async mounted(){
       await this.getCards()
-      await this.getUserTransactions()
-      await this.getCardTransactions()
-      await this.getCampaigns() 
       this.showPage = true;
+      await this.getUserTransactions()
+      await this.getCampaigns() 
     }
 }
 
@@ -130,6 +122,7 @@ export default {
 
 <template>
   <main class="main-content">
+    <div v-if="showPage">
     <div class="row">
       <div class="col-7">
         <h1>My points activity</h1>
@@ -140,10 +133,10 @@ export default {
       </div>
       <div class="col-4 myCards overflow-auto"> 
         <h3>My Cards <i class="icon-credit-card primary font-large-2"></i></h3>
-        <label><input type="radio" :value='all' name="mycards" v-model="mycardsModel" v-on:change="cardSelected" selected/> Show All </label> 
+        <label><input type="radio" value='all' name="mycards" v-model="mycardsModel" v-on:change="cardSelected"/> Show All </label> 
         <br>
         <template v-for="card in myCards">
-          <label><input type="radio" v-bind:value="card.Card_ID" name="mycards" v-model="mycardsModel" v-on:change="cardSelected"/> {{card.Card_Pan}} ({{card.Name}}) </label> 
+          <label><input type="radio" v-bind:value="card.card_type" name="mycards"  v-on:change="cardSelected"/> **** **** **** {{card.card_pan_last}} ({{card.card_type}}) </label> 
           <br>
         </template>
       </div>
@@ -162,16 +155,15 @@ export default {
             </tr>
           </thead>
           <TransactionTableRow v-for="transaction in transactions" excludeProcessing="{{transaction['Excluded']}}">
-            <template #date>{{transaction['Transaction_Date']}}</template>
-            <template #description></template>
-            <template #cardType>{{transaction['Name']}}</template>
-            <template #amount>{{transaction['Currency']}} {{transaction['Amount']}}</template>
-            <template #benefit>{{transaction['Rewards']}}</template>
+            <template #date>{{transaction['transaction_date']}}</template>
+            <template #description>{{transaction['merchant']}}</template>
+            <template #cardType>{{transaction['card_type']}}</template>
+            <template #amount>{{transaction['amount']}}</template>
+            <template #benefit>{{transaction['rewards']}}</template>
           </TransactionTableRow>
         </table>
        
         <vue-awesome-paginate 
-              :items-per-page="itemsPerPage"
               v-model="currentPage"
               :on-click="onClickHandler"/>
         
@@ -180,14 +172,16 @@ export default {
     
       <div class="col-lg-4">
         <br><br>
-        <h5>Ongoing Campaigns</h5>
+        <h5>Active Campaigns</h5>
         <CampaignBlock v-for="campaign in campaigns">
-          <template #campaignName>{{campaign['Name']}}</template>
-          <template #campaignDesc>{{campaign['Description']}}</template>
-          <template #endDate>{{campaign['End_Date']}}</template>
+          <template #campaignName>{{campaign['merchant']}}</template>
+          <template #campaignDesc>{{campaign['description']}}</template>
+          <template #startDate>{{campaign['start_date']}}</template>
+          <template #endDate>{{campaign['end_date']}}</template>
         </CampaignBlock>
       </div>
     </div>
+  </div>
   </main>
 </template>
 

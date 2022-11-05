@@ -18,7 +18,6 @@ export default {
             timerEnabled: true,
             timerCount: 5,
             timerShow: true,
-            userID: 'f59d5e63-76e2-4a8a-a117-5d216d7ace89',
         };
     },
     methods: {
@@ -37,7 +36,7 @@ export default {
           this.showDialog = true
         },
         async getOTP(){
-          const otpResponse = await axios.post("https://wn67is82a0.execute-api.us-east-1.amazonaws.com/1/users/" + this.userID + "/code").then(res =>{
+          const otpResponse = await axios.post("https://wn67is82a0.execute-api.us-east-1.amazonaws.com/1/users/" + this.userID +  "/code").then(res =>{
             console.log(res)
           })
           console.log(otpResponse)

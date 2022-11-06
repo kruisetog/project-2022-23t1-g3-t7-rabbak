@@ -23,14 +23,14 @@ export default {
                         <a>My Points activity</a>
                     </RouterLink>
                 </li>
-                <li>
+                <!-- <li>
                     <RouterLink to="/cards">
                         <span>
                             <i class="icon-credit-card primary font-large-2"></i>
                         </span>
                         <a>My Cards</a>
                     </RouterLink>
-                </li>
+                </li> -->
                 <li>
                     <RouterLink to="/settings">
                     <span>

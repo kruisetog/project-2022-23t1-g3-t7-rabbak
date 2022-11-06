@@ -37,7 +37,6 @@ export default {
       elem.click()
     },
     upload(){
-      this.showFile = false;
       // console.log(this.filelist[0])
       if (this.filelist.length == 0){
         this.showError = true;
@@ -45,8 +44,10 @@ export default {
       }
       Storage.put(this.filelist[0].name, this.filelist[0], {
       }).then((data)=>{
+        this.showFile = false;
         this.showSuccess=true;
       }).catch((err)=>{
+        this.showFile = false;
         this.showError=true;
         this.errormsge=err;
       })

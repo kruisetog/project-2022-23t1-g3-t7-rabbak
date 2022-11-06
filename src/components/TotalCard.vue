@@ -25,7 +25,7 @@ defineProps({
             </div>
             <div class="media-body text-right">
                 <h3>{{cashbacks}}</h3>
-                <span>Cashbacks</span>
+                <span>Total Cashbacks</span>
             </div>
             </div>
         </div>
@@ -40,7 +40,7 @@ defineProps({
             </div>
             <div class="media-body text-right">
                 <h3>{{loyaltyPoints}}</h3>
-                <span>Loyalty Points</span>
+                <span>Total Loyalty Points</span>
             </div>
             </div>
         </div>
@@ -55,7 +55,7 @@ defineProps({
             </div>
             <div class="media-body text-right">
                 <h3>{{miles}}</h3>
-                <span>Miles</span>
+                <span>Total Miles</span>
             </div>
             </div>
         </div>

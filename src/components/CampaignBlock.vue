@@ -20,19 +20,22 @@
 </script>
 
 <template>
-    <div class="row campaign pt-3">
+    <div class="row campaign pt-1">
         <div class="col-6 text-center">
-            <h6 class="font-weight-bold mt-3 text-capitalize"><slot name="campaignName"></slot></h6>
+            <h6 class="font-weight-bold mt-1 text-capitalize"><slot name="campaignName"></slot></h6>
+            <span class="text-capitalize "><slot name="campaignDesc"></slot></span>
             <!-- <div class="progress-bar-cont">
                 <div class="progress-bar" :content="ddd" :style="'width: '+progress + '%'"></div>
             </div>
             <span class="progress-text">{{progress}}%</span> -->
         </div>
         <div class="col-6 text-center">
-            <span class="text-capitalize "><slot name="campaignDesc"></slot></span>
-            <div class="expire">Campaign Ends On 
+            Campaign Period: 
+            <div class="expire"> 
+                <slot name="startDate"></slot> to
                 <br>
-                <slot name="endDate"></slot></div>
+                <slot name="endDate"></slot>
+            </div>
         </div>
     </div>
     <br>

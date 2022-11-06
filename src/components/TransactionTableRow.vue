@@ -2,14 +2,14 @@
 defineProps({
     excludeProcessing: {
         type: Boolean,
-        required: false,
+        required: true,
         default: false
     }
 })
 </script>
 
 <template>
-    <tr v-bind:style=" excludeProcessing ? 'background-color:#ffd8d4;' : 'background-color:none;' ">
+    <tr v-bind:style=" excludeProcessing ? 'background-color:none;' : 'background-color:#ffd8d4;' ">
         <td>
            <slot name="date"></slot>
         </td>

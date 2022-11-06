@@ -18,7 +18,9 @@ export default {
           phoneNumber: "xxxx1234",
           showDeleted: false,
           deletedcardNum: '',
-          myCards: {}
+          myCards: {},
+          showPage: false
+          // userID: 'b2e42eae-b83a-42dc-952c-5ea71cc5f0d9'
         };
     },
     methods: {
@@ -46,12 +48,15 @@ export default {
             }  
         },
         async getCards(){
-          const usercardsResponse = await axios.get("https://wn67is82a0.execute-api.us-east-1.amazonaws.com/1/users/AA8EDA5B03B3422B819FE303E5CA0C18")
-          this.myCards = usercardsResponse['data']['Cards']
+          const usercardsResponse = await axios.get("https://wn67is82a0.execute-api.us-east-1.amazonaws.com/1/users/" + this.userID).then(res =>{
+          this.myCards = res['data']['Cards']
+          console.log(this.myCards)
+      })
       }
     },
     async mounted(){
       await this.getCards()
+      this.showPage = true;
     },
     components:{
       MyCardBlock
@@ -61,6 +66,7 @@ export default {
 
 <template>
   <main class="main-content">
+    <div v-if="showPage">
     <div class="row">
       <div class="col-12">
         <h1>My Cards</h1>
@@ -70,14 +76,14 @@ export default {
         <table class="table">
           <thead>
             <tr>
-              <th scope="col">Your Card</th>
-              <th scope="col">Card Type</th>
-              <th scope="col">Actions</th>
+              <th class="col-4" scope="col">Your Card</th>
+              <th class="col-4">Card Type</th>
+              <th class="col-4">Actions</th>
             </tr>
           </thead>
           <MyCardBlock @showDeleteCard="showDeleteCard" v-for="card in myCards" v-bind:cardid="card['Card_ID']" v-bind:cardNum="card['Card_Pan']">
-            <template #cardNum>{{card['Card_Pan']}}</template>
-            <template #cardType>{{card['Name']}}</template>
+            <template #cardNum>**** **** **** {{card['card_pan_last']}}</template>
+            <template #cardType>{{card['card_type']}}</template>
           </MyCardBlock>
         </table>
       </div>
@@ -133,7 +139,7 @@ export default {
     </div>
   </div>
 </div>
-
+</div>
   </main>
 </template>
 

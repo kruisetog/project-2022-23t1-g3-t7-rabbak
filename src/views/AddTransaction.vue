@@ -1,6 +1,7 @@
 <script>
 import SuccessTransaction from "../components/SuccessTransaction.vue";
 import currencies from "currencies.json";
+import axios from "axios";
 export default {
   data() {
     let props = {
@@ -20,10 +21,11 @@ export default {
       errormsge: "",
       props,
       currencyCode: [],
+      transaction: {}
     };
   },
   methods: {
-    sendTransaction() {
+    async sendTransaction() {
       this.showTrans = false;
       var fieldsKeys = Object.keys(this.props);
       fieldsKeys.forEach((key) => {
@@ -33,10 +35,57 @@ export default {
         }
       });
       if (this.errormsge.length == 0) {
-        this.showSuccess = true;
+        var axios = require('axios');
+        var data = JSON.stringify({
+          transaction_date: this.props.transactionDate,
+          merchant: this.props.merchant,
+          mcc: this.props.mcc,
+          currency: this.props.currency,
+          amount: this.props.amount,
+          card_pan: this.props.cardNum,
+          card_type: this.props.cardtype
+        });
+
+        var config = {
+        method: 'post',
+        url: 'https://wn67is82a0.execute-api.us-east-1.amazonaws.com/1',
+        headers: {
+        'Content-Type': 'application/json'
+        },
+        data : data
+        };
+
+        axios(config)
+        .then(function (response) {
+        console.log(JSON.stringify(response.data));
+        })
+        .catch(function (error) {
+        console.log(error);
+        });
+
+        // var config = {
+        //     method: "post",
+        //     url: "https://wn67is82a0.execute-api.us-east-1.amazonaws.com/1",
+        //     headers: {'Access-Control-Allow-Origin': '*'},
+        //     body:{
+        //       transaction_date: this.props.transactionDate,
+        //       merchant: this.props.merchant,
+        //       mcc: this.props.mcc,
+        //       currency: this.props.currency,
+        //       amount: this.props.amount,
+        //       card_pan: this.props.cardNum,
+        //       card_type: this.props.cardtype
+        //     }
+        //     };
+        //     const response = await axios(config).then(res=>{
+        //       console.log(res)
+        //     }).catch(err=>{
+        //       console.log(err)
+        //     })    
+        // this.showSuccess = true;
       }
       console.log(
-        JSON.parse(
+        this.transaction = JSON.parse(
           JSON.stringify({
             transaction_date: this.props.transactionDate,
             merchant: this.props.merchant,

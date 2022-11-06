@@ -27,15 +27,15 @@ const router = createRouter({
         hideStaffNav: true
        }
     },
-    {
-      path: "/cards",
-      name: "Cards",
-      component: Cards,
-      meta: {
-        hideCustNav: false,
-        hideStaffNav: true
-       }
-    },
+    // {
+    //   path: "/cards",
+    //   name: "Cards",
+    //   component: Cards,
+    //   meta: {
+    //     hideCustNav: false,
+    //     hideStaffNav: true
+    //    }
+    // },
     {
       path: "/settings",
       name: "settings",

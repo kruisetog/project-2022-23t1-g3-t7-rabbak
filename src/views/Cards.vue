@@ -19,6 +19,7 @@ export default {
           showDeleted: false,
           deletedcardNum: '',
           myCards: {},
+          showPage: false
           // userID: 'b2e42eae-b83a-42dc-952c-5ea71cc5f0d9'
         };
     },
@@ -55,6 +56,7 @@ export default {
     },
     async mounted(){
       await this.getCards()
+      this.showPage = true;
     },
     components:{
       MyCardBlock
@@ -64,6 +66,7 @@ export default {
 
 <template>
   <main class="main-content">
+    <div v-if="showPage">
     <div class="row">
       <div class="col-12">
         <h1>My Cards</h1>
@@ -136,7 +139,7 @@ export default {
     </div>
   </div>
 </div>
-
+</div>
   </main>
 </template>
 

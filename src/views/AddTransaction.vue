@@ -1,6 +1,7 @@
 <script>
 import SuccessTransaction from "../components/SuccessTransaction.vue";
 import currencies from "currencies.json";
+import axios from "axios";
 export default {
   data() {
     let props = {
@@ -20,6 +21,7 @@ export default {
       errormsge: "",
       props,
       currencyCode: [],
+      transaction: {}
     };
   },
   methods: {
@@ -33,10 +35,22 @@ export default {
         }
       });
       if (this.errormsge.length == 0) {
-        this.showSuccess = true;
+        // this.showSuccess = true;
+        axios.post("https://wn67is82a0.execute-api.us-east-1.amazonaws.com/1", {
+            transaction_date: this.props.transactionDate,
+            merchant: this.props.merchant,
+            mcc: this.props.mcc,
+            currency: this.props.currency,
+            amount: this.props.amount,
+            card_pan: this.props.cardNum,
+            card_type: this.props.cardtype,
+        })
+            .then((response) => {
+              console.log(response);
+            });
       }
       console.log(
-        JSON.parse(
+        this.transaction = JSON.parse(
           JSON.stringify({
             transaction_date: this.props.transactionDate,
             merchant: this.props.merchant,

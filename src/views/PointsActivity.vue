@@ -17,90 +17,123 @@ export default {
       campaigns: {},
       currentPage: 1,
       mycardsModel: 'all',
+      selected: 'all',
       showPage: false
     }
   },
   methods: {
     cardSelected: function(e) {
-            const selectedIndex = e.target.value;
-            console.log(selectedIndex)
+            let selectedIndex = e.target.value;
+            selectedIndex = selectedIndex.split('.')
+            this.selected =  selectedIndex[1]
             if(selectedIndex != this.mycardsModel){
-              this.getCardTransactions(selectedIndex)
-              this.getCardCampaigns(selectedIndex)
+              this.getCardTransactions(selectedIndex[1])
+              this.getCardCampaigns(selectedIndex[1])
             }
             else{
               this.getUserTransactions()
               this.getCampaigns()
             }
         },
-    async getCards(){
-      const usercardsResponse = await axios.get("https://wn67is82a0.execute-api.us-east-1.amazonaws.com/1/users/" + this.userID).then(res =>{
+    getCards(){
+      axios.get("https://wn67is82a0.execute-api.us-east-1.amazonaws.com/1/users/" + this.userID).then(res =>{
         this.points = res['data']['total_points']
         this.miles = res['data']['total_miles']
         this.cashback = res['data']['total_cashback']
         this.myCards = res['data']['Cards']
       })
     },
-    async getUserTransactions(){
-      const transactionsResponse = await axios.post("https://wn67is82a0.execute-api.us-east-1.amazonaws.com/1/users/" + this.userID + "/transactions?page=" + this.currentPage).then(res=>{
-        this.transactions = res['data']
-        console.log(res['data'])
-        for (let i = 0; i < this.transactions.length; i++) {
-          console.log(String(this.transactions[i]['rewards']).length)
-          if(String(this.transactions[i]['rewards']).length == 0){
-            this.transactions[i]['Excluded'] = true
+    getUserTransactions(){
+      this.transactions = {}
+      axios.post("https://wn67is82a0.execute-api.us-east-1.amazonaws.com/1/users/" + this.userID + "/transactions?page=" + this.currentPage).then(res=>{
+        if(res['data'].length > 0){
+          this.transactions = res['data']
+          console.log(res['data'])
+          for (let i = 0; i < this.transactions.length; i++) {
+            console.log(String(this.transactions[i]['rewards']).length)
+            if(String(this.transactions[i]['rewards']).length == 0){
+              this.transactions[i]['Excluded'] = true
+            }
+            else{
+              this.transactions[i]['Excluded'] = false
+            }
           }
-          else{
-            this.transactions[i]['Excluded'] = false
-          }
+          console.log(this.transactions)
         }
-        console.log(this.transactions)
       })
     },
-    async getCardTransactions(index){
-        const transactionsResponse = await axios.get("https://wn67is82a0.execute-api.us-east-1.amazonaws.com/1/users/" + this.userID + "/card/" + index + "/transactions?page=" + this.currentPage).then(res =>{
-        this.transactions = res['data']
-        for (let i = 0; i < this.transactions.length; i++) {
-          if(this.transactions[i]['rewards'] == null){
-            this.transactions[i]['Excluded'] = true
-          }
-          else{
-            this.transactions[i]['Excluded'] = false
-          }
-        };
-        console.log(this.transactions)
+    getCardTransactions(index){
+        this.transactions = {}
+        axios.get("https://wn67is82a0.execute-api.us-east-1.amazonaws.com/1/users/" + this.userID + "/card/" + index + "/transactions?page=" + this.currentPage).then(res =>{
+          if(res['data'].length > 0){
+          this.transactions = res['data']
+          for (let i = 0; i < this.transactions.length; i++) {
+            if(this.transactions[i]['rewards'] == null){
+              this.transactions[i]['Excluded'] = true
+            }
+            else{
+              this.transactions[i]['Excluded'] = false
+            }
+          };
+          console.log(this.transactions)
+        }
       })
     },
-    async getCampaigns(){
-      const campaignDetails = await axios.get("https://wn67is82a0.execute-api.us-east-1.amazonaws.com/1/campaigns").then(res =>{
-        this.campaigns = res['data']
-        console.log(this.campaigns)
-        for (let i = 0; i < this.campaigns.length; i++) {
-          let startDateSplit = this.campaigns[i]['start_date'].split(" ")
-          let endDateSplit = this.campaigns[i]['end_date'].split(" ")
-          this.campaigns[i]['start_date'] = startDateSplit[0]
-          this.campaigns[i]['end_date'] = endDateSplit[0]
+   getCampaigns(){
+      axios.get("https://wn67is82a0.execute-api.us-east-1.amazonaws.com/1/campaigns").then(res =>{
+        if(res['data'].length > 0){
+          this.campaigns = res['data']
+          console.log(this.campaigns)
+          for (let i = 0; i < this.campaigns.length; i++) {
+            let startDateSplit = this.campaigns[i]['start_date'].split(" ")
+            let endDateSplit = this.campaigns[i]['end_date'].split(" ")
+            this.campaigns[i]['start_date'] = startDateSplit[0]
+            this.campaigns[i]['end_date'] = endDateSplit[0]
+          }
         }
       })
     },
     async getCardCampaigns(index){
-        const CampaignCardResponse = await axios.get("https://wn67is82a0.execute-api.us-east-1.amazonaws.com/1/cards/" + index + "/campaign").then(res =>{
-        this.campaigns = res['data']
-        console.log(this.campaigns)
-        for (let i = 0; i < this.campaigns.length; i++) {
-          let startDateSplit = this.campaigns[i]['start_date'].split(" ")
-          let endDateSplit = this.campaigns[i]['end_date'].split(" ")
-          this.campaigns[i]['start_date'] = startDateSplit[0]
-          this.campaigns[i]['end_date'] = endDateSplit[0]
+      try{
+        const {data} =  await axios.get("https://wn67is82a0.execute-api.us-east-1.amazonaws.com/1/cards/" + index + 
+        "/campaign");
+          console.log(data);      
+        }catch(e){
+          console.log(e.response.data);
         }
-      })
+        // let resp = axios.get("https://wn67is82a0.execute-api.us-east-1.amazonaws.com/1/cards/" + index + 
+        // "/campaign")
+        // console.log(resp)
+      //   .then(res =>{
+      //   if(res['data'].length > 0){
+      //     this.campaigns = res['data']
+      //     console.log(this.campaigns)
+      //     for (let i = 0; i < this.campaigns.length; i++) {
+      //       let startDateSplit = this.campaigns[i]['start_date'].split(" ")
+      //       let endDateSplit = this.campaigns[i]['end_date'].split(" ")
+      //       this.campaigns[i]['start_date'] = startDateSplit[0]
+      //       this.campaigns[i]['end_date'] = endDateSplit[0]
+      //     }
+      //   }
+      //   else{
+      //     this.campaigns = {}
+      //   }
+      // }).catch(err=>{
+      //   console.log(err)
+      // })
     },
     onClickHandler(pageNumber) {
       if (pageNumber) {
         this.currentPage = pageNumber;
-        this.getUserTransactions()
+        console.log(this.selected)
+        console.log(this.currentPage)
+        if(this.selected != this.mycardsModel){
+          this.getCardTransactions(this.selected)
+        }
+        else{
+          this.getUserTransactions()
+        }
       }
-      console.log(pageNumber);
     }
     },
     // computed:{
@@ -110,11 +143,11 @@ export default {
     //   return this.records.slice(startIndex, endIndex);
     //   },
     // },
-    async mounted(){
-      await this.getCards()
+    mounted(){
+      this.getCards()
       this.showPage = true;
-      await this.getUserTransactions()
-      await this.getCampaigns() 
+      this.getUserTransactions()
+      this.getCampaigns() 
     }
 }
 

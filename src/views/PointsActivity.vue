@@ -27,6 +27,7 @@ export default {
             selectedIndex = selectedIndex.split('.')
             this.selected =  selectedIndex[1]
             if(selectedIndex != this.mycardsModel){
+              this.currentPage = 1
               this.getCardTransactions(selectedIndex[1])
               this.getCardCampaigns(selectedIndex[1])
             }
@@ -93,34 +94,25 @@ export default {
         }
       })
     },
-    async getCardCampaigns(index){
-      try{
-        const {data} =  await axios.get("https://wn67is82a0.execute-api.us-east-1.amazonaws.com/1/cards/" + index + 
-        "/campaign");
-          console.log(data);      
-        }catch(e){
-          console.log(e.response.data);
-        }
-        // let resp = axios.get("https://wn67is82a0.execute-api.us-east-1.amazonaws.com/1/cards/" + index + 
-        // "/campaign")
-        // console.log(resp)
-      //   .then(res =>{
-      //   if(res['data'].length > 0){
-      //     this.campaigns = res['data']
-      //     console.log(this.campaigns)
-      //     for (let i = 0; i < this.campaigns.length; i++) {
-      //       let startDateSplit = this.campaigns[i]['start_date'].split(" ")
-      //       let endDateSplit = this.campaigns[i]['end_date'].split(" ")
-      //       this.campaigns[i]['start_date'] = startDateSplit[0]
-      //       this.campaigns[i]['end_date'] = endDateSplit[0]
-      //     }
-      //   }
-      //   else{
-      //     this.campaigns = {}
-      //   }
-      // }).catch(err=>{
-      //   console.log(err)
-      // })
+    getCardCampaigns(index){
+        axios.get("https://wn67is82a0.execute-api.us-east-1.amazonaws.com/1/cards/" + index + "/campaign").then(res=>{
+          console.log(res); 
+          if(res['data'].length > 0){
+          this.campaigns = res['data']
+          console.log(this.campaigns)
+          for (let i = 0; i < this.campaigns.length; i++) {
+            let startDateSplit = this.campaigns[i]['start_date'].split(" ")
+            let endDateSplit = this.campaigns[i]['end_date'].split(" ")
+            this.campaigns[i]['start_date'] = startDateSplit[0]
+            this.campaigns[i]['end_date'] = endDateSplit[0]
+            }
+          }
+          else{
+            this.campaigns = {}
+          }
+        }).catch(err=>{
+        console.log(err)
+        })
     },
     onClickHandler(pageNumber) {
       if (pageNumber) {

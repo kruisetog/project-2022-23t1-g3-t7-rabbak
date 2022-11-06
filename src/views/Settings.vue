@@ -14,7 +14,7 @@ export default {
             showDialog: false,
             showDeleted:false,
             otpEmpty:false,
-            email: "",
+            email: this.getEmail(),
             // timerEnabled: false,
             // timerCount: 5,
             // timerShow: true,
@@ -36,8 +36,8 @@ export default {
           this.getOTP().then(console.log('done'));
           this.showDialog = true
         },
-        async getEmail(){
-            const getResponse = await axios.get("https://wn67is82a0.execute-api.us-east-1.amazonaws.com/1/users/" + this.userID).then(res =>{
+        getEmail(){
+            axios.get("https://wn67is82a0.execute-api.us-east-1.amazonaws.com/1/users/" + this.userID).then(res =>{
               this.email = res['data']['email']
             })
           },
@@ -51,19 +51,12 @@ export default {
             this.otpMessage = e
           }
         },
-        async sendOTP(){
-          try{
-        const {data} =  await axios.delete(`https://wn67is82a0.execute-api.us-east-1.amazonaws.com/1/users/${this.userID}/code/${this.otp}`,
-                {
-                    headers: {
-                    'Access-Control-Allow-Origin:' : '*'
-                    }  
-                }   
-            );
-          console.log(data);      
-        }catch(e){
-          console.log(e.response.data);
-        }
+        sendOTP(){
+        axios.delete("https://wn67is82a0.execute-api.us-east-1.amazonaws.com/1/users/" + this.userID + "/code/" + this.otp).then(res=>{
+          console.log(res)
+          }).catch(err=>{
+          console.log(err)
+        })
         },
         close(){
             this.showDialog = false
@@ -107,8 +100,8 @@ export default {
       //     immediate: true // This ensures the watcher is triggered upon creation
       // },
       },
-      async mounted(){
-        await this.getEmail()
+      mounted(){
+        this.getEmail()
      }
 };
 </script>

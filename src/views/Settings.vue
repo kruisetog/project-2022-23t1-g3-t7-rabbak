@@ -51,12 +51,14 @@ export default {
             this.otpMessage = e
           }
         },
-        sendOTP(){
-        axios.delete("https://wn67is82a0.execute-api.us-east-1.amazonaws.com/1/users/" + this.userID + "/code/" + this.otp).then(res=>{
-          console.log(res)
-          }).catch(err=>{
-          console.log(err)
-        })
+       sendOTP(){
+        var config = {
+            method: "delete",
+            url: "https://wn67is82a0.execute-api.us-east-1.amazonaws.com/1/users/" + this.userID + "/code/" + this.otp,
+            headers: {"Access-Control-Allow-Origin": '*'}
+            };
+            const response = axios(config);
+            console.log(response)
         },
         close(){
             this.showDialog = false
@@ -135,7 +137,7 @@ export default {
           <p>This action cannot be undone. We have sent an Verification Code to <strong>{{email}}</strong> 
           Enter Verification Code in the box below to delete your account.</p>
           <p v-show="timerShow">OTP expiring in {{timerCount}}</p>
-          <input type="number" v-model="otp" name ='otp'  class="form-control" id="otp" placeholder="Enter OTP">
+          <input type="number" v-model="otp" name ='otp'  class="form-control" id="otp" placeholder="Enter Verification Code">
           <!-- <a id="resend" class="float-right" @click="resend">Resend Verification Code</a> -->
           <p class="otpEmpty float-left" v-if="otpEmpty" href="#">{{ otpMessage }}</p>
           

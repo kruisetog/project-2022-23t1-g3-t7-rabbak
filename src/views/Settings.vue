@@ -8,23 +8,23 @@ export default {
     data() {
         return {
           post:{
-            otp: "",
-            otpMessage: ''
+            otp: ""
           },
             showDialog: false,
             showDeleted:false,
-            otpEmpty:false,
+            // otpEmpty:false,
             email: this.getEmail(),
-            // timerEnabled: false,
-            // timerCount: 5,
-            // timerShow: true,
+            timerEnabled: true,
+            timerCount: 300,
+            timerShow: true,
+            otpMessage: ''
         };
     },
     methods: {
       deleteAccount(){
             if(this.otp == undefined){
                this.otpMessage = "Verification Code not entered"
-               this.otpEmpty = true
+              //  this.otpEmpty = true
             }
             else{
                 // this.showDialog = false
@@ -51,14 +51,27 @@ export default {
             this.otpMessage = e
           }
         },
-       sendOTP(){
+       async sendOTP(){
         var config = {
             method: "delete",
             url: "https://wn67is82a0.execute-api.us-east-1.amazonaws.com/1/users/" + this.userID + "/code/" + this.otp,
-            headers: {"Access-Control-Allow-Origin": '*'}
+            headers: {}
             };
-            const response = axios(config);
-            console.log(response)
+            const response = await axios(config).then(res=>{
+              console.log(res)
+              if(res['data'] != true){
+                this.otpMessage = res['data']
+                // this.otpEmpty = true
+              }
+              else{
+                this.otpMessage = ""
+                this.showDialog = false
+                // this.otpEmpty = false
+                this.showDeleted = true
+              }
+            }).catch(err=>{
+              this.otpMessage = err
+            })    
         },
         close(){
             this.showDialog = false
@@ -70,37 +83,38 @@ export default {
         resend(){
           // console.log('resend')
           this.getOTP()
-          // this.timerCount = 5
-          // this.timerEnabled(5)
+          this.otpMessage = "Verification Code sent"
+          this.timerCount = 300
+          this.timerEnabled(300)
         }
     },
     watch: {
-      // timerEnabled(value) {
-      //     if (value) {
-      //         setTimeout(() => {
-      //             this.timerCount--;
-      //         }, 1000);
-      //     }
-      // },
-      // timerCount: {
-      //     handler(value) {
-      //         if (value > 0 && this.timerEnabled) {
-      //             this.otpMessage = ""
-      //             this.otpEmpty = false
-      //             this.timerShow = true
-      //             setTimeout(() => {
-      //                 this.timerCount--;
-      //             }, 1000);
-      //         }
-      //         if(value <= 0){
-      //           this.otpMessage = "Verification Code Expired"
-      //           this.otpEmpty = true
-      //           this.timerShow = false
-      //         }
+      timerEnabled(value) {
+          if (value) {
+              setTimeout(() => {
+                  this.timerCount--;
+              }, 1000);
+          }
+      },
+      timerCount: {
+          handler(value) {
+              if (value > 0 && this.timerEnabled) {
+                  this.otpMessage = ""
+                  // this.otpEmpty = false
+                  this.timerShow = true
+                  setTimeout(() => {
+                      this.timerCount--;
+                  }, 1000);
+              }
+              if(value <= 0){
+                this.otpMessage = "Verification Code Expired"
+                // this.otpEmpty = true
+                this.timerShow = false
+              }
 
-      //     },
-      //     immediate: true // This ensures the watcher is triggered upon creation
-      // },
+          },
+          immediate: true // This ensures the watcher is triggered upon creation
+      },
       },
       mounted(){
         this.getEmail()
@@ -136,10 +150,10 @@ export default {
           <img class="img-fluid mx-auto d-block" src="../assets/exclamation-mark.png"/><br>
           <p>This action cannot be undone. We have sent an Verification Code to <strong>{{email}}</strong> 
           Enter Verification Code in the box below to delete your account.</p>
-          <p v-show="timerShow">OTP expiring in {{timerCount}}</p>
-          <input type="number" v-model="otp" name ='otp'  class="form-control" id="otp" placeholder="Enter Verification Code">
-          <!-- <a id="resend" class="float-right" @click="resend">Resend Verification Code</a> -->
-          <p class="otpEmpty float-left" v-if="otpEmpty" href="#">{{ otpMessage }}</p>
+          <p v-show="timerShow">Verification Code expiring in {{timerCount}} seconds</p>
+          <input type="text" v-model="otp" name ='otp'  class="form-control" id="otp" placeholder="Enter Verification Code">
+          <a id="resend" class="float-right" @click="resend">Resend Verification Code</a>
+          <p class="otpEmpty float-left" href="#">{{ otpMessage }}</p>
           
         </div>
         <div class="modal-footer">

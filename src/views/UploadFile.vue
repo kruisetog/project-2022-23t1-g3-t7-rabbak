@@ -42,7 +42,7 @@ export default {
         this.showError = true;
         this.errormsge = 'Please select a file to upload'
       }
-      else if(this.filetype.includes(this.filelist[0].type)){
+      else if(this.filetype.includes(this.filelist[0].type) == false){
         this.showError = true;
         this.errormsge = 'Unsupported File Type'
       }

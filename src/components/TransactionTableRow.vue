@@ -8,8 +8,9 @@ defineProps({
 })
 </script>
 
+
 <template>
-    <tr v-bind:style=" excludeProcessing ? 'background-color:none;' : 'background-color:#ffd8d4;' ">
+    <tr v-bind:style=" !excludeProcessing ? 'background-color:none;' : 'background-color:#ffd8d4;' ">
         <td>
            <slot name="date"></slot>
         </td>

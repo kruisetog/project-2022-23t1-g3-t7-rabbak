@@ -99,7 +99,6 @@ export default {
       timerCount: {
           handler(value) {
               if (value > 0 && this.timerEnabled) {
-                  this.otpMessage = ""
                   // this.otpEmpty = false
                   this.timerShow = true
                   setTimeout(() => {

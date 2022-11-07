@@ -42,15 +42,22 @@ export default {
         this.showError = true;
         this.errormsge = 'Please select a file to upload'
       }
-      Storage.put(this.filelist[0].name, this.filelist[0], {
-      }).then((data)=>{
-        this.showFile = false;
-        this.showSuccess=true;
-      }).catch((err)=>{
-        this.showFile = false;
-        this.showError=true;
-        this.errormsge=err;
-      })
+      else if(this.filetype.includes(this.filelist[0].type)){
+        this.showError = true;
+        this.errormsge = 'Unsupported File Type'
+      }
+      else{
+        console.log(this.filelist[0])
+        Storage.put(this.filelist[0].name, this.filelist[0], {
+        }).then((data)=>{
+          this.showFile = false;
+          this.showSuccess=true;
+        }).catch((err)=>{
+          this.showFile = false;
+          this.showError=true;
+          this.errormsge=err;
+        })
+    }
     } ,close(value){
         this.showSuccess = false;
         this.showError = false;

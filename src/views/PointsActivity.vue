@@ -16,14 +16,24 @@ export default {
       cashback: 0,
       campaigns: {},
       currentPage: 1,
-      mycardsModel: 'ALL'
+      mycardsModel: 'ALL',
+      selected: ''
     }
   },
   methods: {
     async handlePageNavigation(pageNumber){
+      console.log(pageNumber)
       this.currentPage = pageNumber
-      await this.getUserTransactions()
-      await this.getCampaigns()
+      console.log(this.selected)
+      console.log(this.mycardsModel)
+      if(this.selected != this.mycardsModel && this.selected != ''){
+          await this.getCardTransactions(this.selected)
+          await this.getCardCampaigns(this.selected)
+        }
+        else{
+          await this.getUserTransactions()
+          await this.getCampaigns()
+        }
     },
     // async handleSelectedCard(value){
     //     this.currentPage = 1
@@ -40,7 +50,9 @@ export default {
     cardSelected: function(e) {
         let selectedIndex = e.target.value;
         this.currentPage = 1
+        this.selected = selectedIndex
         if(selectedIndex != this.mycardsModel){
+          this.selected = selectedIndex
           this.getCardTransactions(selectedIndex)
           this.getCardCampaigns(selectedIndex)
         }
@@ -66,9 +78,9 @@ export default {
         this.myCards = response.data.Cards;
       }
     },
-    getUserTransactions(){
+    async getUserTransactions(){
       this.transactions = {}
-      axios.post("https://wn67is82a0.execute-api.us-east-1.amazonaws.com/1/users/" + this.userID + "/transactions?page=" + this.currentPage).then(res=>{
+      await axios.post("https://wn67is82a0.execute-api.us-east-1.amazonaws.com/1/users/" + this.userID + "/transactions?page=" + this.currentPage).then(res=>{
         if(res['data'].length > 0){
           this.transactions = res['data']
           console.log(res['data'])
@@ -124,8 +136,8 @@ export default {
           }
       }
     },
-    getCardCampaigns(index){
-        axios.get("https://wn67is82a0.execute-api.us-east-1.amazonaws.com/1/cards/" + index + "/campaign").then(res=>{
+    async getCardCampaigns(index){
+        await axios.get("https://wn67is82a0.execute-api.us-east-1.amazonaws.com/1/cards/" + index + "/campaign").then(res=>{
           console.log(res); 
           if(res['data'].length > 0){
           this.campaigns = res['data']
@@ -144,17 +156,20 @@ export default {
         console.log(err)
         })
     },
-    onClickHandler(pageNumber) {
+    async onClickHandler(pageNumber) {
       if (pageNumber) {
+        console.log(pageNumber)
+        console.log(this.currentPage)
         this.currentPage = pageNumber;
         console.log(this.selected)
         console.log(this.mycardsModel)
-        console.log(this.currentPage)
-        if(this.selected != this.mycardsModel){
-          this.getCardTransactions(this.selected)
+        if(this.selected != this.mycardsModel && this.selected != ''){
+          await this.getCardTransactions(this.selected)
+          await this.getCardCampaigns(this.selected)
         }
         else{
-          this.getUserTransactions()
+          await this.getUserTransactions()
+          await this.getCampaigns()
         }
       }
     }
@@ -190,7 +205,7 @@ export default {
         <label><input type="radio" value='ALL' name="mycards" v-model="mycardsModel" v-on:change="cardSelected"/> Show All </label> 
         <br>
         <template v-for="card in myCards">
-          <label><input type="radio" :value="card.card_type" v-model="mycardsModel" name="mycards"  v-on:change="cardSelected"/> **** **** **** {{card.card_pan_last}} ({{card.card_type}}) </label> 
+          <label><input type="radio" :value="card.card_type" name="mycards"  v-on:change="cardSelected"/> **** **** **** {{card.card_pan_last}} ({{card.card_type}}) </label> 
           <br>
         </template>
       </div>
@@ -219,7 +234,7 @@ export default {
        
         <vue-awesome-paginate 
               v-model="currentPage"
-              :on-click="handlePageNavigation"/>
+              :on-click="onClickHandler"/>
       
       </div>
     

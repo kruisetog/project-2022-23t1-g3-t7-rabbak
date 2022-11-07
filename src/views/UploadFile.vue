@@ -40,6 +40,7 @@ export default {
       // console.log(this.filelist[0])
       if (this.filelist.length == 0){
         this.showError = true;
+        this.showFile = false;
         this.errormsge = 'Please select a file to upload'
       }
       else if(this.filetype.includes(this.filelist[0].type) == false){

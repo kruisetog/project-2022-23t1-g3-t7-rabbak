@@ -86,7 +86,7 @@ export default {
           console.log(res['data'])
           for (let i = 0; i < this.transactions.length; i++) {
             console.log(String(this.transactions[i]['rewards']).length)
-            if(this.transactions[i]['rewards'] == 0){
+            if(this.transactions[i]['rewards'] == 0 || this.transactions[i]['rewards'] == null){
               this.transactions[i]['Excluded'] = true
             }
             else{
@@ -108,7 +108,7 @@ export default {
       if (response.status === 200) {
         this.transactions = response.data;
         for (let i = 0; i < this.transactions.length; i++) {
-            if(this.transactions[i]['rewards'] == 0){
+            if(this.transactions[i]['rewards'] == 0 || this.transactions[i]['rewards'] == null){
               this.transactions[i]['Excluded'] = true
             }
             else{

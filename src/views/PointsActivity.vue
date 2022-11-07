@@ -197,7 +197,7 @@ export default {
               <th scope="col">Rewards</th>
             </tr>
           </thead>
-          <TransactionTableRow v-for="transaction in transactions" excludeProcessing="{{transaction['Excluded']}}">
+          <TransactionTableRow v-for="transaction in transactions" v-bind:excludeProcessing="transaction['Excluded']">
             <template #date>{{transaction['transaction_date']}}</template>
             <template #description>{{transaction['merchant']}}</template>
             <template #cardType>{{transaction['card_type']}}</template>

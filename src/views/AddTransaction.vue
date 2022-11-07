@@ -35,7 +35,6 @@ export default {
         }
       });
       if (this.errormsge.length == 0) {
-        var axios = require('axios');
         var data = JSON.stringify({
           transaction_date: this.props.transactionDate,
           merchant: this.props.merchant,
@@ -48,16 +47,25 @@ export default {
 
         var config = {
         method: 'post',
-        url: 'https://wn67is82a0.execute-api.us-east-1.amazonaws.com/1',
+        url: 'https://wn67is82a0.execute-api.us-east-1.amazonaws.com/1/transactions',
         headers: {
         'Content-Type': 'application/json'
         },
         data : data
         };
 
-        axios(config)
-        .then(function (response) {
-        console.log(JSON.stringify(response.data));
+        axios(config).then(response=>{
+        if(response['data'] != "Success"){
+          this.errormsge = response['data'];
+          this.showError = true;
+          this.showSuccess = false;
+          this.showTrans = false;
+        }
+        else{
+          this.showError = false;
+          this.showSuccess = true;
+          this.showTrans = false;
+        }
         })
         .catch(function (error) {
         console.log(error);
@@ -84,19 +92,19 @@ export default {
         //     })    
         // this.showSuccess = true;
       }
-      console.log(
-        this.transaction = JSON.parse(
-          JSON.stringify({
-            transaction_date: this.props.transactionDate,
-            merchant: this.props.merchant,
-            mcc: this.props.mcc,
-            currency: this.props.currency,
-            amount: this.props.amount,
-            card_pan: this.props.cardNum,
-            card_type: this.props.cardtype,
-          })
-        )
-      );
+      // console.log(
+      //   this.transaction = JSON.parse(
+      //     JSON.stringify({
+      //       transaction_date: this.props.transactionDate,
+      //       merchant: this.props.merchant,
+      //       mcc: this.props.mcc,
+      //       currency: this.props.currency,
+      //       amount: this.props.amount,
+      //       card_pan: this.props.cardNum,
+      //       card_type: this.props.cardtype,
+      //     })
+      //   )
+      // );
       // if(this.transactionDate.length == 0){
       //   this.showSuccess = true;
       //   this.errormsge = "Transaction Date is empty";

@@ -16,27 +16,40 @@ export default {
       cashback: 0,
       campaigns: {},
       currentPage: 1,
-      mycardsModel: 'all',
-      selected: 'all',
-      showPage: false
+      mycardsModel: 'ALL'
     }
   },
   methods: {
+    async handlePageNavigation(pageNumber){
+      this.currentPage = pageNumber
+      await this.getUserTransactions()
+      await this.getCampaigns()
+    },
+    // async handleSelectedCard(value){
+    //     this.currentPage = 1
+    //     console.log(this.mycardsModel)
+    //     if(this.mycardsModel != "ALL"){
+    //       await this.getCardTransactions(value);
+    //       await this.getCardCampaigns(value);
+    //     }
+    //     else{
+    //       await this.getUserTransactions();
+    //       await this.getCampaigns();
+    //     }
+    // },
     cardSelected: function(e) {
-            let selectedIndex = e.target.value;
-            this.currentPage = 1
-            if(selectedIndex != this.mycardsModel){
-              selectedIndex = selectedIndex.split('.')
-              this.selected =  selectedIndex[1]
-              this.getCardTransactions(selectedIndex[1])
-              this.getCardCampaigns(selectedIndex[1])
-            }
-            else{
-              this.mycardsModel = selectedIndex
-              this.getUserTransactions()
-              this.getCampaigns()
-            }
-        },
+        let selectedIndex = e.target.value;
+        this.currentPage = 1
+        if(selectedIndex != this.mycardsModel){
+          this.getCardTransactions(selectedIndex)
+          this.getCardCampaigns(selectedIndex)
+        }
+        else{
+          this.mycardsModel = selectedIndex
+          this.getUserTransactions()
+          this.getCampaigns()
+        }
+    },
     async getCards(){
       var config = {
         method: "get",
@@ -157,7 +170,6 @@ export default {
       await this.getCards();
       await this.getUserTransactions();
       await this.getCampaigns();
-      this.showPage = true;
     }
 }
 
@@ -165,7 +177,6 @@ export default {
 
 <template>
   <main class="main-content">
-    <div v-if="showPage">
     <div class="row">
       <div class="col-7">
         <h1>My points activity</h1>
@@ -176,10 +187,10 @@ export default {
       </div>
       <div class="col-4 myCards overflow-auto"> 
         <h3>My Cards <i class="icon-credit-card primary font-large-2"></i></h3>
-        <label><input type="radio" value='all' name="mycards" v-model="mycardsModel" v-on:change="cardSelected"/> Show All </label> 
+        <label><input type="radio" value='ALL' name="mycards" v-model="mycardsModel" v-on:change="cardSelected"/> Show All </label> 
         <br>
         <template v-for="card in myCards">
-          <label><input type="radio" v-bind:value="card.card_type" v-model="mycardsModel" name="mycards"  v-on:change="cardSelected"/> **** **** **** {{card.card_pan_last}} ({{card.card_type}}) </label> 
+          <label><input type="radio" :value="card.card_type" v-model="mycardsModel" name="mycards"  v-on:change="cardSelected"/> **** **** **** {{card.card_pan_last}} ({{card.card_type}}) </label> 
           <br>
         </template>
       </div>
@@ -208,8 +219,7 @@ export default {
        
         <vue-awesome-paginate 
               v-model="currentPage"
-              :on-click="onClickHandler"/>
-        
+              :on-click="handlePageNavigation"/>
       
       </div>
     
@@ -224,7 +234,6 @@ export default {
         </CampaignBlock>
       </div>
     </div>
-  </div>
   </main>
 </template>
 

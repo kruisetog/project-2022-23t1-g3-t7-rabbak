@@ -44,6 +44,7 @@ export default {
       }
       else if(this.filetype.includes(this.filelist[0].type) == false){
         this.showError = true;
+        this.showFile = false;
         this.errormsge = 'Unsupported File Type'
       }
       else{

@@ -151,7 +151,7 @@ export default {
           Enter Verification Code in the box below to delete your account.</p>
           <p v-show="timerShow">Verification Code expiring in {{timerCount}} seconds</p>
           <input type="text" v-model="otp" name ='otp'  class="form-control" id="otp" placeholder="Enter Verification Code">
-          <a id="resend" class="float-right" @click="resend">Resend Verification Code</a>
+          <!-- <a id="resend" class="float-right" @click="resend">Resend Verification Code</a> -->
           <p class="otpEmpty float-left" href="#">{{ otpMessage }}</p>
           
         </div>

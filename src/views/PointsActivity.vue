@@ -35,33 +35,36 @@ export default {
           await this.getCampaigns()
         }
     },
-    // async handleSelectedCard(value){
-    //     this.currentPage = 1
-    //     console.log(this.mycardsModel)
-    //     if(this.mycardsModel != "ALL"){
-    //       await this.getCardTransactions(value);
-    //       await this.getCardCampaigns(value);
-    //     }
-    //     else{
-    //       await this.getUserTransactions();
-    //       await this.getCampaigns();
-    //     }
-    // },
-    cardSelected: function(e) {
-        let selectedIndex = e.target.value;
+    async handleSelectedCard(e){
         this.currentPage = 1
-        this.selected = selectedIndex
-        if(selectedIndex != this.mycardsModel){
-          this.selected = selectedIndex
-          this.getCardTransactions(selectedIndex)
-          this.getCardCampaigns(selectedIndex)
+        console.log(this.mycardsModel)
+        console.log(e.target.value)
+        if(e.target.value != this.mycardsModel){
+          this.selected = e.target.value
+          await this.getCardTransactions(e.target.value);
+          await this.getCardCampaigns(e.target.value);
         }
         else{
-          this.mycardsModel = selectedIndex
-          this.getUserTransactions()
-          this.getCampaigns()
+          this.mycardsModel = e.target.value
+          await this.getUserTransactions();
+          await this.getCampaigns();
         }
     },
+    // cardSelected: function(e) {
+    //     let selectedIndex = e.target.value;
+    //     this.currentPage = 1
+    //     this.selected = selectedIndex
+    //     if(selectedIndex != this.mycardsModel){
+    //       this.selected = selectedIndex
+    //       this.getCardTransactions(selectedIndex)
+    //       this.getCardCampaigns(selectedIndex)
+    //     }
+    //     else{
+    //       this.mycardsModel = selectedIndex
+    //       this.getUserTransactions()
+    //       this.getCampaigns()
+    //     }
+    // },
     async getCards(){
       var config = {
         method: "get",
@@ -70,6 +73,7 @@ export default {
       };
 
       const response = await axios(config);
+      console.log(response)
       if (response.status === 200) {
         console.log(response);
         this.points = response.data.total_points;
@@ -79,12 +83,17 @@ export default {
       }
     },
     async getUserTransactions(){
-      this.transactions = {}
-      await axios.post("https://wn67is82a0.execute-api.us-east-1.amazonaws.com/1/users/" + this.userID + "/transactions?page=" + this.currentPage).then(res=>{
-        if(res['data'].length > 0){
-          this.transactions = res['data']
-          console.log(res['data'])
-          for (let i = 0; i < this.transactions.length; i++) {
+      var config = {
+        method: "post",
+        url: "https://wn67is82a0.execute-api.us-east-1.amazonaws.com/1/users/" + this.userID + "/transactions?page=" + this.currentPage,
+        headers: {},
+      };
+
+      const response = await axios(config);
+      console.log(response)
+      if (response.status === 200) {
+        this.transactions = response.data
+        for (let i = 0; i < this.transactions.length; i++) {
             console.log(String(this.transactions[i]['rewards']).length)
             if(this.transactions[i]['rewards'] == 0 || this.transactions[i]['rewards'] == null){
               this.transactions[i]['Excluded'] = true
@@ -93,9 +102,16 @@ export default {
               this.transactions[i]['Excluded'] = false
             }
           }
-          console.log(this.transactions)
-        }
-      })
+      }
+      // this.transactions = {}
+      // await axios.post().then(res=>{
+      //   if(res['data'].length > 0){
+      //     this.transactions = res['data']
+      //     console.log(res['data'])
+          
+      //     console.log(this.transactions)
+      //   }
+      // })
     },
     async getCardTransactions(index){
       var config = {
@@ -105,6 +121,7 @@ export default {
       };
 
       const response = await axios(config);
+      console.log(response)
       if (response.status === 200) {
         this.transactions = response.data;
         for (let i = 0; i < this.transactions.length; i++) {
@@ -126,6 +143,7 @@ export default {
       };
 
       const response = await axios(config);
+      console.log(response)
       if (response.status === 200) {
         this.campaigns = response.data;
         for (let i = 0; i < this.campaigns.length; i++) {
@@ -137,24 +155,36 @@ export default {
       }
     },
     async getCardCampaigns(index){
-        await axios.get("https://wn67is82a0.execute-api.us-east-1.amazonaws.com/1/cards/" + index + "/campaign").then(res=>{
-          console.log(res); 
-          if(res['data'].length > 0){
-          this.campaigns = res['data']
-          console.log(this.campaigns)
+        var config = {
+          method: "get",
+          url: "https://wn67is82a0.execute-api.us-east-1.amazonaws.com/1/cards/" + index + "/campaign",
+          headers: {},
+        };
+        const response = await axios(config);
+        console.log(response)
+        if(response.status == 200){
+          this.campaigns = response.data;
           for (let i = 0; i < this.campaigns.length; i++) {
-            let startDateSplit = this.campaigns[i]['start_date'].split(" ")
-            let endDateSplit = this.campaigns[i]['end_date'].split(" ")
-            this.campaigns[i]['start_date'] = startDateSplit[0]
-            this.campaigns[i]['end_date'] = endDateSplit[0]
+              let startDateSplit = this.campaigns[i]['start_date'].split(" ")
+              let endDateSplit = this.campaigns[i]['end_date'].split(" ")
+              this.campaigns[i]['start_date'] = startDateSplit[0]
+              this.campaigns[i]['end_date'] = endDateSplit[0]
             }
-          }
-          else{
-            this.campaigns = {}
-          }
-        }).catch(err=>{
-        console.log(err)
-        })
+        }
+          // console.log(res); 
+          // if(res['data'].length > 0){
+          // this.campaigns = res['data']
+          // console.log(this.campaigns)
+          // for (let i = 0; i < this.campaigns.length; i++) {
+          //   let startDateSplit = this.campaigns[i]['start_date'].split(" ")
+          //   let endDateSplit = this.campaigns[i]['end_date'].split(" ")
+          //   this.campaigns[i]['start_date'] = startDateSplit[0]
+          //   this.campaigns[i]['end_date'] = endDateSplit[0]
+          //   }
+          // }
+          // else{
+          //   this.campaigns = {}
+          // }
     },
     async onClickHandler(pageNumber) {
       if (pageNumber) {
@@ -202,10 +232,10 @@ export default {
       </div>
       <div class="col-4 myCards overflow-auto"> 
         <h3>My Cards <i class="icon-credit-card primary font-large-2"></i></h3>
-        <label><input type="radio" value='ALL' name="mycards" v-model="mycardsModel" v-on:change="cardSelected"/> Show All </label> 
+        <label><input type="radio" value='ALL' name="mycards" v-model="mycardsModel" v-on:change="handleSelectedCard"/> Show All </label> 
         <br>
         <template v-for="card in myCards">
-          <label><input type="radio" :value="card.card_type" name="mycards"  v-on:change="cardSelected"/> **** **** **** {{card.card_pan_last}} ({{card.card_type}}) </label> 
+          <label><input type="radio" :value="card.card_type" name="mycards"  v-on:change="handleSelectedCard"/> **** **** **** {{card.card_pan_last}} ({{card.card_type}}) </label> 
           <br>
         </template>
       </div>

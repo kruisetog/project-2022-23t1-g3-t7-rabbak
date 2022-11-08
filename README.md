@@ -16,3 +16,6 @@ npm run dev
 ```sh
 npm run build
 ```
+
+#### App URL
+https://main.drji873lwxbhj.amplifyapp.com/ 

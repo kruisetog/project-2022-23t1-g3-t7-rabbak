@@ -18,7 +18,8 @@ Amplify.configure({
 });
 
 const app = createApp(App);
-app.config.globalProperties.userID = "b2e42eae-b83a-42dc-952c-5ea71cc5f0d9";
+app.config.globalProperties.userID = proces.env.VUE_APP_USERID;
+app.config.globalProperties.deleteUserID = proces.env.VUE_APP_DELETEUSERID;
 app.use(router);
 app.use(VueAwesomePaginate);
 app.mount("#app");

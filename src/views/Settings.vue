@@ -37,14 +37,16 @@ export default {
           this.showDialog = true
         },
         getEmail(){
-            axios.get("https://wn67is82a0.execute-api.us-east-1.amazonaws.com/1/users/f59d5e63-76e2-4a8a-a117-5d216d7ace89").then(res =>{
+            console.log(this.userID)
+            axios.get("https://wn67is82a0.execute-api.us-east-1.amazonaws.com/1/users/" + this.userID).then(res =>{
               this.email = res['data']['email']
             })
           },
         async getOTP(){
+          console.log(this.deleteUserID)
           try {
             await axios.post(
-              "https://wn67is82a0.execute-api.us-east-1.amazonaws.com/1/users/f59d5e63-76e2-4a8a-a117-5d216d7ace89/code").then(res=>{
+              "https://wn67is82a0.execute-api.us-east-1.amazonaws.com/1/users/" + this.deleteUserID + "/code").then(res=>{
                this.otpMessage = "Verification Code sent"
               });
           } catch (e) {
@@ -54,7 +56,7 @@ export default {
        async sendOTP(){
         var config = {
             method: "delete",
-            url: "https://wn67is82a0.execute-api.us-east-1.amazonaws.com/1/users/" + this.userID + "/code/" + this.otp,
+            url: "https://wn67is82a0.execute-api.us-east-1.amazonaws.com/1/users/" + this.deleteUserID + "/code/" + this.otp,
             headers: {}
             };
             const response = await axios(config).then(res=>{

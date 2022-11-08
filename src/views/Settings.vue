@@ -37,13 +37,11 @@ export default {
           this.showDialog = true
         },
         getEmail(){
-            console.log(this.userID)
-            axios.get("https://wn67is82a0.execute-api.us-east-1.amazonaws.com/1/users/" + this.userID).then(res =>{
+            axios.get("https://wn67is82a0.execute-api.us-east-1.amazonaws.com/1/users/" + this.deleteUserID).then(res =>{
               this.email = res['data']['email']
             })
           },
         async getOTP(){
-          console.log(this.deleteUserID)
           try {
             await axios.post(
               "https://wn67is82a0.execute-api.us-east-1.amazonaws.com/1/users/" + this.deleteUserID + "/code").then(res=>{

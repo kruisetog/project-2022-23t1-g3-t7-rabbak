@@ -18,8 +18,8 @@ Amplify.configure({
 });
 
 const app = createApp(App);
-app.config.globalProperties.userID = proces.env.VUE_APP_USERID;
-app.config.globalProperties.deleteUserID = proces.env.VUE_APP_DELETEUSERID;
+app.config.globalProperties.userID = process.env.VUE_APP_USERID;
+app.config.globalProperties.deleteUserID = process.env.VUE_APP_DELETEUSERID;
 app.use(router);
 app.use(VueAwesomePaginate);
 app.mount("#app");

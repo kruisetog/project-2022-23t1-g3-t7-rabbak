@@ -37,14 +37,14 @@ export default {
           this.showDialog = true
         },
         getEmail(){
-            axios.get("https://wn67is82a0.execute-api.us-east-1.amazonaws.com/1/users/" + this.userID).then(res =>{
+            axios.get("https://wn67is82a0.execute-api.us-east-1.amazonaws.com/1/users/f59d5e63-76e2-4a8a-a117-5d216d7ace89").then(res =>{
               this.email = res['data']['email']
             })
           },
         async getOTP(){
           try {
             await axios.post(
-              `https://wn67is82a0.execute-api.us-east-1.amazonaws.com/1/users/${this.userID}/code`).then(res=>{
+              "https://wn67is82a0.execute-api.us-east-1.amazonaws.com/1/users/f59d5e63-76e2-4a8a-a117-5d216d7ace89/code").then(res=>{
                this.otpMessage = "Verification Code sent"
               });
           } catch (e) {

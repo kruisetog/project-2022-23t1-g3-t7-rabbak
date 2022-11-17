@@ -1,51 +1,49 @@
+import hashlib
+import re
 import uuid
-from datetime import datetime
 
 from currency_converter import CurrencyConverter
 
-from src.backend.database_seeder import get_hash
-from src.backend.transactions.add_bulk.database import UnprocessedTransactions, UserCard, Decorator, CardType
-
-import regex as re
+from src.backend.transactions.add.database import UserCard, CardType, Decorator, UnprocessedTransactions, get_session
 
 
-def process_transaction(db, data, msg):
+def get_hash(string: str):
+    return hashlib.sha256(string.encode("utf-8")).hexdigest()
+
+
+def lambda_handler(event, context):
+    db = get_session()
+    data = event
     # validate compulsory fields
     try:
         data['mcc'] = int(data['mcc'])
     except ValueError:
-        msg.append({data['transaction_id']: f'MCC {data["mcc"]} must be be a positive number.'})
-        return
+        return f'{data["transaction_id"]}: MCC {data["mcc"]} must be be a positive number.'
 
     try:
         data['amount'] = float(data['amount'])
     except ValueError:
-        msg.append({data['transaction_id']: f'Amount {data["amount"]} must be a positive number.'})
-        return
+        return f'{data["transaction_id"]}: Amount {data["amount"]} must be a positive number.'
 
     if not re.match('\d{4}-\d{2}-\d{2}', data['transaction_date']):
-        msg.append({data['transaction_id']: f'Transaction date {data["transaction_date"]} must be a valid date.'})
-        return
+        return f'{data["transaction_id"]}: Transaction date {data["transaction_date"]} must be a valid date.'
 
     card_pan = re.sub('[^0-9]', '', str(data['card_pan']))
     if not 13 <= len(card_pan) <= 19:
-        msg.append({data['transaction_id']: f'Card PAN {data["card_pan"]} must be 13-19 digits long.'})
-        return
+        return f'{data["transaction_id"]} Card PAN {data["card_pan"]} must be 13-19 digits long.'
 
     res = db.query(UserCard).filter(UserCard.card_pan_hash == get_hash(card_pan)).first()
     try:
         res = res.as_dict()
     except AttributeError:
         return f'No transaction with card pan {card_pan}.'
-    
+
     # validate optional fields
     if 'card_type' in data:
         if data['card_type'] not in [i.name for i in CardType]:
-            msg.append({data['transaction_id']: f'Card Type {data["card_type"]} is invalid.'})
-            return
+            return f'{data["transaction_id"]} Card Type {data["card_type"]} is invalid.'
         if str(data['card_type']) != str(res['card_type'].name):
-            msg.append({data['transaction_id']: 'Card Type provided does not match the the card PAN provided'})
-            return
+            return f'{data["transaction_id"]} Card Type provided does not match the the card PAN provided'
     data['card_type'] = str(res['card_type'].name)
 
     # add internal fields
@@ -71,6 +69,12 @@ def process_transaction(db, data, msg):
                                     card_type=data['card_type'], user_id=data['user_id'],
                                     decorator_id=data['decorator_id']))
     except ValueError:
-        msg.append({data['transaction_id']: 'An error occurred while attempting database storage.'})
+        return f'{data["transaction_id"]}: An error occurred while attempting database storage.'
 
     db.commit()
+
+
+if __name__ == "__main__":
+    # failed_transactions = [{'k': 'v'}, {'k2': 'v2'}]
+    # print(failed_transactions)
+    print('end single add', lambda_handler())

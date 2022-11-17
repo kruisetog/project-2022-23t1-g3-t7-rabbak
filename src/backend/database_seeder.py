@@ -2,6 +2,12 @@ import uuid
 
 from src.backend.transactions.add_bulk.database import Exclusions, Decorator, UserCard, CardType, RewardType, User
 
+import hashlib
+
+
+def get_hash(string: str):
+    return hashlib.sha256(string.encode("utf-8")).hexdigest()
+
 
 def seed_db(db):
     db.add(Exclusions(mcc=6051, reward_type=RewardType(1)))
@@ -36,7 +42,7 @@ def seed_db(db):
     users = {}
     for row_dict in df.to_dict(orient="records"):
         card_pan = str(re.sub('[^0-9]', '', row_dict['card_pan']))
-        card_pan_hash = hash(card_pan)
+        card_pan_hash = get_hash(card_pan)
         card_pan_last = int(card_pan[-4:])
         card_type = row_dict['card_type']
         user_id = uuid.uuid4()
@@ -47,5 +53,23 @@ def seed_db(db):
 
     for k, v in users.items():
         db.add(User(user_id=k, email=v))
+
+    client2 = boto3.client('s3')
+    bucket_name2 = 'batchuploadbucket'
+    object_key2 = 'public/Project B (Appendix 2a) - spend.first.1000.csv'
+    csv_obj2 = client2.get_object(Bucket=bucket_name2, Key=object_key2)
+    body2 = csv_obj2['Body']
+    csv_string2 = body2.read().decode('utf-8')
+    df2 = pd.read_csv(StringIO(csv_string2))
+
+    card_seeder = {}
+    for row_dict in df2.to_dict(orient="records"):
+        card_pan = re.sub('[^0-9]', '', row_dict['card_pan'])
+        if get_hash(card_pan) not in card_seeder:
+            card_seeder[get_hash(card_pan)] = [int(card_pan[-4:]), row_dict['card_type']]
+    for k, v in card_seeder.items():
+        user_id = uuid.uuid4()
+        db.add(User(user_id=user_id, email='RabbakUser@gmail.com'))
+        db.add(UserCard(card_pan_hash=k, user_id=user_id, card_pan_last=v[0], card_type=v[1]))
 
     db.commit()
